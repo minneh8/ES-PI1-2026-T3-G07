@@ -1,12 +1,12 @@
 while True:
     try:
-        print("\n1 - Gerenciamento \n2 - Votação")
+        print("\n1 - Candidatos \n2 - Eleitores")
         escolha = int(input("Escolha a opção desejada: "))
         if escolha == 1:
-            print("Gerenciamento")
+            print("Candidatos")
             break    
         elif escolha == 2:
-            print("Votação")
+            print("Eleitores")
             break
         else:
             print("Opção inválida, tente novamente.")
