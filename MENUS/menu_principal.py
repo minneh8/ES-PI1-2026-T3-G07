@@ -1,5 +1,5 @@
-import DATABASE
-conexao = DATABASE.conecta_mysql()
+#import DATABASE
+#conexao = DATABASE.conecta_mysql()
 menu_principal = -1  
 menu_gerenciamento = -1  
 menu_votacao = -1  
@@ -8,7 +8,7 @@ menu_eleitores = -1
 menu_sistem_votacao = -1
 menu_auditoria = -1
 menu_resultado = -1
-
+menu_edicaodados = -1
 #Menu Principal
 def menu_principal_func():  
     global menu_principal  
@@ -104,6 +104,7 @@ def menu_candidatos_func():
                     break   
                 case 4: 
                     print("Edição de Dados")
+                    menu_edicaodados_func()
                     break
                 case 5: 
                     print("Cadastramento")
@@ -195,6 +196,56 @@ def menu_resultado_func():
                     break   
                 case _:
                     print("Opção inválida, tente novamente.")
+        except ValueError:
+            print("Entrada inválida. Digite um número.")
+
+def menu_para_votacao_func():
+    global menu_para_votacao 
+    while menu_principal == 1:
+        try:
+            print("\n0 - Voltar \n1 - Votar \n2 - Encerrar Votação")
+            menu_para_votacao = int(input("Escolha a opção desejada: "))
+            match menu_para_votacao:
+                case 0:
+                    print("Voltando...")
+                    return(menu_principal_func())
+                case 1:
+                    print("Votar")
+                    menu_votacao_func()
+                    break
+                case 2:
+                    print("Encerrar Votação")
+                    confirmação=input("Tem certeza que deseja encerrar a votação? (s/n): ")
+                    if confirmação.lower() == 's':
+                        print("Votação encerrada.")
+                    else: 
+                        return(menu_para_votacao_func())
+                    break
+                case _:
+                    print("Opção inválida, tente novamente.")    
+        except ValueError:
+            print("Entrada inválida. Digite um número.")
+def menu_edicaodados_func():
+    global menu_edicaodados
+    while menu_candidatos == 4:
+        try:
+            print("\n0 - Voltar \n1 - Editar Nome \n2 - Editar Idade \n3 - Editar Partido")
+            menu_edicaodados = int(input("Escolha a opção desejada: "))
+            match menu_edicaodados:
+                case 0:
+                    print("Voltando...")
+                    return(menu_candidatos_func())
+                case 1:
+                    print("Editar Nome")
+                    break
+                case 2:
+                    print("Editar Idade")
+                    break
+                case 3:
+                    print("Editar Partido")
+                    break
+                case _:
+                    print("Opção inválida, tente novamente.")    
         except ValueError:
             print("Entrada inválida. Digite um número.")
 menu_principal_func()
