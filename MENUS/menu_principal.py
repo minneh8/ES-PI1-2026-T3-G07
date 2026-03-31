@@ -1,5 +1,6 @@
 #import DATABASE
 #conexao = DATABASE.conecta_mysql()
+"""Condiçoes Globais"""
 menu_principal = -1  
 menu_gerenciamento = -1  
 menu_votacao = -1  
@@ -9,7 +10,9 @@ menu_sistem_votacao = -1
 menu_auditoria = -1
 menu_resultado = -1
 menu_edicaodados = -1
-#Menu Principal
+
+
+"""Menu Principal"""
 def menu_principal_func():  
     global menu_principal  
     while menu_principal != 0:
@@ -32,7 +35,7 @@ def menu_principal_func():
                     print("Opção inválida, tente novamente.")    
         except ValueError:
             print("Entrada inválida. Digite um número.")
-# Menu Gerenciamento 
+"""Menu Gerenciamento"""
 def menu_gerenciamento_func():   
     global menu_gerenciamento 
     while menu_principal == 1:
@@ -55,7 +58,7 @@ def menu_gerenciamento_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
-#Menu Votação
+"""Menu Votação"""
 def menu_votacao_func():
     global menu_votacao
     while menu_principal == 2:
@@ -82,7 +85,7 @@ def menu_votacao_func():
                     print("Opção Invalida, tente novamente.")
         except ValueError:
             print("Entrada Inválida. Digite um Numero")
-#Menu Candidatos
+"""Menu Candidatos"""
 def menu_candidatos_func():
     global menu_candidatos
     while menu_gerenciamento == 1:
@@ -113,7 +116,7 @@ def menu_candidatos_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
-#Menu Eleitores
+"""Menu Eleitores"""
 def menu_eleitores_func():
     global menu_eleitores
     while menu_gerenciamento == 2:
@@ -143,7 +146,7 @@ def menu_eleitores_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
-
+"""Sitema de Votação"""
 def menu_sistem_votacao_func():
     global menu_sistem_votacao
     while menu_votacao == 1:
@@ -161,6 +164,7 @@ def menu_sistem_votacao_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
+"""Auditoria"""
 def menu_auditoria_func():
     global menu_auditoria
     while menu_votacao == 2:
@@ -181,6 +185,7 @@ def menu_auditoria_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
+"""Resultado"""
 def menu_resultado_func():
     global menu_resultado
     while menu_votacao == 3:
@@ -199,6 +204,7 @@ def menu_resultado_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
+"""Para a Votação"""
 def menu_para_votacao_func():
     global menu_para_votacao 
     while menu_principal == 1:
@@ -225,6 +231,7 @@ def menu_para_votacao_func():
                     print("Opção inválida, tente novamente.")    
         except ValueError:
             print("Entrada inválida. Digite um número.")
+"""Edição de Dados"""
 def menu_edicaodados_func():
     global menu_edicaodados
     while menu_candidatos == 4:
