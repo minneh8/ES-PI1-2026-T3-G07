@@ -1,8 +1,11 @@
 """Menu Votação"""
-import menu_principal as main
 import CondicoesGlobais as estado
 
 def menu_votacao_func():
+    import menu_principal as main
+    import Menu_Auditoria as meau
+    import Menu_Sistema_Votacao as mesv
+    import Menu_Resultado as mer
     while estado.menu_principal == 2:
         try:
             print("0 - Voltar \n1 - Sistema de Votação \n2 - Auditoria \n3 - Resultado")
@@ -14,15 +17,15 @@ def menu_votacao_func():
                     return
                 case 1:
                     print("Sistema de Votação")
-                    main.menu_sistem_votacao_func()
+                    mesv.menu_sistem_votacao_func()
                     break
                 case 2:
                     print("Auditoria")
-                    main.menu_auditoria_func()
+                    meau.menu_auditoria_func()
                     break
                 case 3:
                     print("Resultado")
-                    main.menu_resultado_func()
+                    mer.menu_resultado_func()
                     break
                 case _:
                     print("Opção Invalida, tente novamente.")

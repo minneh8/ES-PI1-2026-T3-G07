@@ -1,11 +1,13 @@
 #import DATABASE
 #conexao = DATABASE.conecta_mysql()
-import CondicoesGlobais as estado
-import Menu_Gerenciamento as gr
-import Menu_Votacao as vt
 
 """Menu Principal"""
+import CondicoesGlobais as estado
+
 def menu_principal_func():  
+    import Menu_Gerenciamento as gr
+    import Menu_Votacao as vt
+
     while estado.menu_principal != 0:
         try:
             print("\n0 - Encerrar \n1 - Gerenciamento \n2 - Votação")

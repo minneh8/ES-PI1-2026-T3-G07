@@ -1,14 +1,14 @@
 """Edição de Dados"""
+import CondicoesGlobais as estado
 import menu_principal as main
 import Menu_Candidatos as ct
 
 def menu_edicaodados_func():
-    global menu_edicaodados
-    while main.menu_candidatos == 4:
+    while estado.menu_candidatos == 4:
         try:
             print("\n0 - Voltar \n1 - Editar Nome \n2 - Editar Idade \n3 - Editar Partido")
-            menu_edicaodados = int(input("Escolha a opção desejada: "))
-            match menu_edicaodados:
+            estado.menu_edicaodados = int(input("Escolha a opção desejada: "))
+            match estado.menu_edicaodados:
                 case 0:
                     print("Voltando...")
                     return(ct.menu_candidatos_func())

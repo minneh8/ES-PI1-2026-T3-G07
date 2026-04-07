@@ -1,14 +1,15 @@
 """Auditoria"""
+import CondicoesGlobais as estado
+import Menu_Votacao
 def menu_auditoria_func():
-    global menu_auditoria
-    while menu_votacao == 2:
+    while estado.menu_votacao == 2:
         try:
-            print("\n0 - Voltar\n1 - Logs \n 2 - Protocolo de Votação")
-            menu_auditoria= int(input("Escolha a opção desejada: "))
-            match menu_auditoria:
+            print("\n0 - Voltar\n1 - Logs \n2 - Protocolo de Votação")
+            estado.menu_auditoria= int(input("Escolha a opção desejada: "))
+            match estado.menu_auditoria:
                 case 0:
                     print("Voltando...")
-                    return(vt.menu_votacao_func())
+                    return(Menu_Votacao.menu_votacao_func())
                 case 1:
                     print("Logs")
                     break   
@@ -19,3 +20,5 @@ def menu_auditoria_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
+
+menu_auditoria_func()
