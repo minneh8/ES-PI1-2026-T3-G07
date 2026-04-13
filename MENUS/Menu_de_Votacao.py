@@ -1,7 +1,7 @@
 """Para a Votação"""
 import CondicoesGlobais as estado
 def menu_para_votacao_func():
-    import menu_principal as main
+    import MENUS.menu_principal as main
     import Menu_Votacao as vt
     
     while estado.menu_principal == 1:

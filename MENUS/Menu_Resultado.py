@@ -2,7 +2,7 @@
 import CondicoesGlobais as estado
 
 def menu_resultado_func():
-    import menu_principal as main
+    import MENUS.menu_principal as main
     import Menu_Votacao as vt
     while estado.menu_votacao == 3:
         try:

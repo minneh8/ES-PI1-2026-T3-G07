@@ -2,7 +2,7 @@
 import CondicoesGlobais as estado
 import Menu_Candidatos as ct
 
-def menu_edicaodados_func():
+def menu_edicaodados_cand_func():
     while estado.menu_candidatos == 4:
         try:
             print("\n0 - Voltar \n1 - Editar Nome \n2 - Editar Idade \n3 - Editar Partido")

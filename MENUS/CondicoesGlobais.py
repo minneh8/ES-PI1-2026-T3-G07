@@ -12,3 +12,7 @@ menu_sistem_votacao = -1
 menu_auditoria = -1
 menu_resultado = -1
 menu_edicaodados = -1
+menu_buscacandidatos = -1
+menu_listacandidatos = -1
+menu_removecandidatos = -1
+menu_cadastramento_cand = -1

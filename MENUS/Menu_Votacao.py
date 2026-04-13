@@ -11,7 +11,7 @@ def menu_votacao_func():
             estado.menu_votacao= int(input("Escolha a opção desejada: "))
             match estado.menu_votacao:
                 case 0:
-                    import menu_principal as main
+                    import MENUS.menu_principal as main
                     print("\n Voltando... ")
                     main.menu_principal_func()
                     return
