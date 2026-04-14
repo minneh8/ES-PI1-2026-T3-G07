@@ -21,3 +21,4 @@ menu_removeeleitores = -1
 menu_buscaeleitores = -1
 menu_edicaodados_ele = -1
 menu_cadastramento_ele = -1
+menu_para_votacao = -1

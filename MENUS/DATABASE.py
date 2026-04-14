@@ -15,7 +15,7 @@ def conecta_mysql():
             cursor = connection.cursor()
             print("Você esta conectado ao banco de dados com sucesso!")
 
-
     except Error as e:
         print(f"Erro ao conectar to MySQL: {e}")
 
+conecta_mysql()

@@ -12,7 +12,7 @@ def menu_gerenciamento_func():
             estado.menu_gerenciamento = int(input("Escolha a opção desejada: "))
             match estado.menu_gerenciamento:
                 case 0:
-                    import MENUS.menu_principal as main
+                    import menu_principal as main
                     print("Voltando...")
                     return (main.menu_principal_func())
                 case 1:

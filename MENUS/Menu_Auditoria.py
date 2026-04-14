@@ -8,7 +8,7 @@ def menu_auditoria_func():
             estado.menu_auditoria= int(input("Escolha a opção desejada: "))
             match estado.menu_auditoria:
                 case 0:
-                    print("Voltando...")
+                    print("\nVoltando...")
                     return(Menu_Votacao.menu_votacao_func())
                 case 1:
                     print("Logs")

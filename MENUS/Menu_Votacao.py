@@ -7,16 +7,16 @@ import Menu_Resultado as mer
 def menu_votacao_func():
     while estado.menu_principal == 2:
         try:
-            print("0 - Voltar \n1 - Sistema de Votação \n2 - Auditoria \n3 - Resultado")
+            print("0 - Voltar \n1 -  Abrir Sistema de Votação \n2 - Auditoria \n3 - Resultado")
             estado.menu_votacao= int(input("Escolha a opção desejada: "))
             match estado.menu_votacao:
                 case 0:
-                    import MENUS.menu_principal as main
+                    import menu_principal as main
                     print("\n Voltando... ")
                     main.menu_principal_func()
                     return
                 case 1:
-                    print("Sistema de Votação")
+                    print(" Abrir Sistema de Votação")
                     mesv.menu_sistem_votacao_func()
                     break
                 case 2:
