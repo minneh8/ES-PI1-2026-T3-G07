@@ -53,6 +53,57 @@ def validacao_cpf_func():
                 print("CPF Inválido! O primeiro dígito verificador está incorreto.")
 
 
-        
+def validacao_tituloeleitor_func():
+    teleitor = input("Digite o seu Titulo Eleitor: ")
+    while len(teleitor) != 12:
+        print("Titulo Eleitor inválido. O Titulo Eleitor deve conter exatamente 12 dígitos numéricos.")
+        teleitor = input("Digite o seu Titulo Eleitor: ")
 
-validacao_cpf_func()
+    n1 = int(teleitor[0])
+    n2 = int(teleitor[1])
+    n3 = int(teleitor[2])
+    n4 = int(teleitor[3])
+    n5 = int(teleitor[4])
+    n6 = int(teleitor[5])
+    n7 = int(teleitor[6])
+    n8 = int(teleitor[7])
+    e9 = str(teleitor[8])
+    e10 = str(teleitor[9])
+    d11 = int(teleitor[10])
+    d12 = int(teleitor[11])
+
+    estado = str(e9 + e10)
+    dict = {
+        "01": "SP",
+        "02": "MG",
+        "03": "RJ",
+        "04": "RS",
+        "05": "BA",
+        "06": "PR",
+        "07": "CE",
+        "08": "PE",
+        "09": "SC",
+        "10": "GO",
+        "11": "MA",
+        "12": "PB",
+        "13": "PA",
+        "14": "ES",
+        "15": "PI",
+        "16": "RN",
+        "17": "AL",
+        "18": "MT",
+        "19": "MS",
+        "20": "DF",
+        "21": "SE",
+        "22": "AM",
+        "23": "RO",
+        "24": "AC",
+        "25": "AP",
+        "26": "RR",
+        "27": "TO",
+        "28": "ZZ",
+        }
+    estado = dict[estado]
+    
+
+validacao_tituloeleitor_func()
