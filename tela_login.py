@@ -1,5 +1,6 @@
 import CondicoesGlobais as estado
 import Validações as v
+import DATABASE as db
 def tela_login_func():
     print("""
 :'######::'####::'######::'########:'########:'##::::'##::::'###:::::::'########::'########::::'##::::'##::'#######::'########::::'###:::::'######:::::'###:::::'#######::
@@ -40,22 +41,13 @@ def login_func():
 
 def cadastro_func():
     print("Para realizar o cadastro, por favor, digite o seu Nome, Sobrenome, CPF, Titulo Eleitoral.\nSua Senha será gerada automaticamente.\n")
-    estado.nome = str(input("Digite o seu Nome: "))
+    estado.nome = str(input("Digite o seu Nome Completo: "))
     try:
         while len(estado.nome) < 3:
             print("Nome inválido. O nome deve conter pelo menos 3 caracteres.")
-            estado.nome = str(input("Digite o seu Nome: "))
+            estado.nome = str(input("Digite o seu Nome Completo: "))
     except ValueError:
         print("Nome inválido. O nome deve conter pelo menos 3 caracteres.")
-
-
-    estado.sobrenome = str(input("Digite o seu Sobrenome: "))
-    try:
-        while len(estado.sobrenome) < 3:
-            print("Sobrenome inválido. O sobrenome deve conter pelo menos 3 caracteres.")
-            estado.sobrenome = str(input("Digite o seu Sobrenome: "))
-    except ValueError:
-        print("Sobrenome inválido. O sobrenome deve conter pelo menos 3 caracteres.")
 
 
     estado.cpf = input("Digite o seu CPF: ")
@@ -76,4 +68,13 @@ def cadastro_func():
     except ValueError:
         print("Titulo Eleitor inválido. O Titulo Eleitor deve conter exatamente 12 dígitos numéricos.")
     v.validacao_tituloeleitor_func(estado.teleitor)
+
+    estado.senha = input("Digite a sua Senha: ")
+
+    db.conecta_mysql()
+    estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele) VALUES (%s, %s, %s, %s)"
+    estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha)
+    estado.cursor.execute(estado.cadastro, estado.valores)
+    estado.connection.commit()
+    print("Cadastro realizado com sucesso!")
 tela_login_func()

@@ -1,5 +1,6 @@
 # Funções menu gerenciamento
 import CondicoesGlobais as estado
+import DATABASE as db
 def menu_gerenciamento_func():
     while estado.menu_principal == 1:
         try:
@@ -191,7 +192,15 @@ def menu_buscaeleitores_func():
                     return
                 case 1:
                     print("Buscar Eleitores")
-                    break
+                    db.conecta_mysql()
+                    nomebusca = input("Digite o nome do eleitor que deseja achar: ")
+
+                    busca = "SELECT * FROM eleitores WHERE nome_ele = %s"
+                    estado.cursor.execute(busca, nomebusca)
+                    resultado = estado.cursor.fetchall()
+
+                    print(resultado)
+
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
