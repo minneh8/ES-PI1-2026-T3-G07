@@ -76,5 +76,7 @@ def cadastro_func():
     estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha)
     estado.cursor.execute(estado.cadastro, estado.valores)
     estado.connection.commit()
+    estado.cursor.close()
+    estado.connection.close()
     print("Cadastro realizado com sucesso!")
 tela_login_func()
