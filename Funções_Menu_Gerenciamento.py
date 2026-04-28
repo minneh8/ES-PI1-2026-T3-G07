@@ -195,12 +195,19 @@ def menu_buscaeleitores_func():
                     db.conecta_mysql()
                     nomebusca = input("Digite o nome do eleitor que deseja achar: ")
 
-                    busca = "SELECT * FROM eleitores WHERE nome_ele = %s"
-                    estado.cursor.execute(busca, nomebusca)
+                    busca = "SELECT * FROM eleitores WHERE nome_ele LIKE %s"
+                    estado.cursor.execute(busca, (f"%{nomebusca}%",))
                     resultado = estado.cursor.fetchall()
 
-                    print(resultado)
+                    if resultado:
+                        for linha in resultado:
+                            print("Eleitor Encontrado")
+                            print(linha)
+                    else:
+                        print("Eleitor não encontrado!")
 
+                    estado.cursor.close()
+                    estado.connection.close()
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
