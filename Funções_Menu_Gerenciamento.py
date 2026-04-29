@@ -36,7 +36,23 @@ def menu_listacandidatos_func():
                     menu_candidatos_func()
                     return
                 case 1:
-                    print("Lista de Candidatos")
+                    def lista_candidatos():
+                            db.conecta_mysql()
+                            cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
+        
+                            query = "SELECT * FROM candidatos "
+                            cursor.execute(query)
+        
+                            resultados = cursor.fetchall()
+        
+                            if not resultados:
+                                print("Nenhum eleitor encontrado.")
+                                return
+        
+                            for candidato in resultados:
+                                print(f"Numero eleitoral: {candidato['num']} | Nome: {candidato['nome']} | Numero do Partido: {candidato['id_part']}\n")
+                            cursor.close()
+                    lista_candidatos()
                     break
                 case _:
                     print("Opção inválida, tente novamente.")
@@ -55,7 +71,24 @@ def menu_listaeleitores_func():
                     menu_eleitores_func()
                     return
                 case 1:
-                    print("Mostrar a lista de Eleitores")
+                    print("Mostrando a lista de Eleitores...")
+                    def listaeleitores():
+                        db.conecta_mysql()
+                        cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
+    
+                        query = "SELECT * FROM eleitores "
+                        cursor.execute(query)
+    
+                        resultados = cursor.fetchall()
+    
+                        if not resultados:
+                            print("Nenhum eleitor encontrado.")
+                            return
+    
+                        for eleitor in resultados:
+                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {eleitor['cpf_ele']} | Título Eleitoral: {eleitor['titulo_ele']}\n")
+                        cursor.close()
+                    listaeleitores()
                     break
                 case _:
                     print("Opção inválida, tente novamente.")
@@ -74,8 +107,26 @@ def menu_buscacandidatos_func():
                     menu_candidatos_func()
                     return
                 case 1:
-                    print("Busca de Candidatos")
-                    break
+                        termo = input("Digite o nome para buscar: ")
+                        def busca_candidatos(termo):
+                            db.conecta_mysql()
+                            cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
+        
+                            query = "SELECT * FROM candidatos WHERE nome LIKE %s"
+                            cursor.execute(query, (f"%{termo}%",))
+        
+                            resultados = cursor.fetchall()
+        
+                            if not resultados:
+                                print("Nenhum eleitor encontrado.")
+                                return
+        
+                            for candidato in resultados:
+                                print(f"Numero eleitoral: {candidato['num']} | Nome: {candidato['nome']} | Numero do Partido: {candidato['id_part']}")
+                            cursor.close()
+                        busca_candidatos(termo)
+                        break
+                    
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
@@ -192,22 +243,27 @@ def menu_buscaeleitores_func():
                     return
                 case 1:
                     print("Buscar Eleitores")
-                    db.conecta_mysql()
-                    nomebusca = input("Digite o nome do eleitor que deseja achar: ")
+                    termo = input("Digite o nome para buscar: ")
+                    def busca_eleitores(termo):
+                        db.conecta_mysql()
+                        cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
+    
+                        query = "SELECT * FROM eleitores WHERE nome_ele LIKE %s"
+                        cursor.execute(query, (f"%{termo}%",))
+    
+                        resultados = cursor.fetchall()
+    
+                        if not resultados:
+                            print("Nenhum eleitor encontrado.")
+                            return
+    
+                        for eleitor in resultados:
+                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {eleitor['cpf_ele']} | Título Eleitoral: {eleitor['titulo_ele']}")
+                        cursor.close()
 
-                    busca = "SELECT * FROM eleitores WHERE nome_ele LIKE %s"
-                    estado.cursor.execute(busca, (f"%{nomebusca}%",))
-                    resultado = estado.cursor.fetchall()
+                    busca_eleitores(termo)
+                    break
 
-                    if resultado:
-                        for linha in resultado:
-                            print("Eleitor Encontrado")
-                            print(linha)
-                    else:
-                        print("Eleitor não encontrado!")
-
-                    estado.cursor.close()
-                    estado.connection.close()
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
