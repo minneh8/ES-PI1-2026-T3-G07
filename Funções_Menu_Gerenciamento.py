@@ -1,6 +1,7 @@
 # Funções menu gerenciamento
 import CondicoesGlobais as estado
 import DATABASE as db
+import Validações as v
 def menu_gerenciamento_func():
     while estado.menu_principal == 1:
         try:
@@ -281,7 +282,8 @@ def menu_cadastramento_ele_func():
                     menu_eleitores_func()
                     return
                 case 1:
-                    print("Cadastramento de Eleitores")
+                    print("Cadastramento de Eleitores") 
+                    cadastro_func()
                     break
                 case _:
                     print("Opção inválida, tente novamente.")
@@ -367,3 +369,44 @@ def menu_eleitores_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
+
+def cadastro_func():
+    print("Para realizar o cadastro, por favor, digite o seu Nome, Sobrenome, CPF, Titulo Eleitoral.\nSua Senha será gerada automaticamente.\n")
+    estado.nome = str(input("Digite o seu Nome Completo: "))
+    try:
+        while len(estado.nome) < 3:
+            print("Nome inválido. O nome deve conter pelo menos 3 caracteres.")
+            estado.nome = str(input("Digite o seu Nome Completo: "))
+    except ValueError:
+        print("Nome inválido. O nome deve conter pelo menos 3 caracteres.")
+
+
+    estado.cpf = input("Digite o seu CPF: ")
+    try:
+        while len(estado.cpf) != 11:
+            print("CPF inválido. O CPF deve conter exatamente 11 dígitos numéricos.")
+            estado.cpf = input("Digite o seu CPF: ")
+    except ValueError:
+        print("CPF inválido. O CPF deve conter exatamente 11 dígitos numéricos.")
+    v.validacao_cpf_func(estado.cpf)
+
+
+    estado.teleitor = input("Digite o seu Titulo Eleitoral: ")
+    try:
+        while len(estado.teleitor) != 12:
+            print("Titulo Eleitor inválido. O Titulo Eleitor deve conter exatamente 12 dígitos numéricos.")
+            estado.teleitor = input("Digite o seu Titulo Eleitoral: ")
+    except ValueError:
+        print("Titulo Eleitor inválido. O Titulo Eleitor deve conter exatamente 12 dígitos numéricos.")
+    v.validacao_tituloeleitor_func(estado.teleitor)
+
+    estado.senha = input("Digite a sua Senha: ")
+
+    db.conecta_mysql()
+    estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele) VALUES (%s, %s, %s, %s)"
+    estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha)
+    estado.cursor.execute(estado.cadastro, estado.valores)
+    estado.connection.commit()
+    estado.cursor.close()
+    estado.connection.close()
+    print("Cadastro realizado com sucesso!")
