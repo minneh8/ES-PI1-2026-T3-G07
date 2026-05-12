@@ -35,3 +35,4 @@ valores = 0
 connection = 0
 cpfvalido = True
 teleitorvalido = 0
+sistema_votacao_aberto = False

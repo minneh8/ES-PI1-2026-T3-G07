@@ -1,11 +1,18 @@
 #Funções menus Votação
 import CondicoesGlobais as estado
+from datetime import datetime
+
+#Resgistrando o LOG de votação
+def registrar_log(mensagem):
+    with open("logs.txt", "a", encoding="utf-8") as arquivo: #Abrir arquivo logs.txt na UTF-8
+        datahora = datetime.now().strftime("%d/%m/%Y %H:%M:%S") #Usando o import para salvar a data certa do computador convertendo em strings (STRF)
+        arquivo.write(f"[{datahora}] {mensagem}\n") #Escrevendo no arquivo
 
 """Menu Votação"""
 def menu_votacao_func():
     while estado.menu_principal == 2:
         try:
-            print("0 - Voltar \n1 -  Abrir Sistema de Votação \n2 - Auditoria \n3 - Resultado")
+            print("0 - Voltar \n1 - Votação \n2 - Auditoria \n3 - Resultado")
             estado.menu_votacao= int(input("Escolha a opção desejada: "))
             match estado.menu_votacao:
                 case 0:
@@ -13,7 +20,7 @@ def menu_votacao_func():
                     print("\n Voltando... ")
                     return(main.menu_principal_func())
                 case 1:
-                    print(" Abrir Sistema de Votação")
+                    print("Abir Sistema de Votação")
                     menu_sistem_votacao_func()
                     break
                 case 2:
@@ -42,7 +49,7 @@ def menu_auditoria_func():
                     return(menu_votacao_func())
                 case 1:
                     print("Logs")
-                    break   
+                    
                 case 2:
                     print("Protocolo de Votação")
                     break
@@ -63,12 +70,25 @@ def menu_sistem_votacao_func():
                     print("\nVoltando...")
                     return(menu_votacao_func())
                 case 1:
-                    print("Comecar Votação")
-                    break
+                    if (estado.sistema_votacao_aberto == True):
+                        print("Sistema de votação já aberto!")
+                    else:
+                        #Variável global de controle, para não ter erros - Isso vai controlar se a urna está aberta.
+                        estado.sistema_votacao_aberto == False
+
+                        #Chamando a função pra registrar no logs.txt
+                        registrar_log("Sistema de votação aberto!")
+                        print("Sistema de votação aberto com sucesso!")
                 case 2:
-                    print("Encerrando Sistema de Votação...")
-                    import menu_principal as main
-                    return(main.menu_principal_func())
+                        #Variável global de controle, para não ter erros 
+                        estado.sistema_votacao_aberto = False
+
+                        #Registrando log
+                        registrar_log("Sistema de votação encerrado")
+                        print("Encerrando Sistema de Votação...")
+
+                        import menu_principal as main
+                        return(main.menu_principal_func())
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
