@@ -130,6 +130,23 @@ def gerador_senha_func():
     numeros = ''.join([str(random.randint(0, 9)) for _ in range(4)])
 
     cg.senha = letra1 + letra2 + letra3 + numeros
+
+
+
+def gerar_protocolo(voto):
+    import random
+    import string
+    # "V" + 2 letras aleatórias + Ano (26) + número candidato (2 dígitos) + 5 dígitos aleatórios
+    prefixo = "V"
+    letras_aleatorias = ''.join(random.choices(string.ascii_uppercase, k=2))
+    ano = "26"
+    candidato_formatado = str(voto).zfill(2)  # Garante 2 dígitos ex: 4 -> "04"
+    digitos_aleatorios = ''.join(random.choices(string.digits, k=5))
+
+    cg.protocolo = f"{prefixo}{letras_aleatorias}{ano}{candidato_formatado}{digitos_aleatorios}"
+    print(f"Seu Protocolo de Votação: {cg.protocolo}")
+
+
     
 
 

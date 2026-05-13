@@ -1,2 +1,36 @@
 [12/05/2026 17:13:34] Sistema de votação encerrado
 [12/05/2026 17:13:57] Sistema de votação aberto!
+[13/05/2026 13:48:14] Sistema de votação aberto!
+[13/05/2026 13:49:03] Sistema de votação aberto!
+[13/05/2026 13:49:05] Sistema de votação aberto!
+[13/05/2026 13:49:05] Sistema de votação aberto!
+[13/05/2026 13:49:06] Sistema de votação aberto!
+[13/05/2026 13:49:07] Sistema de votação aberto!
+[13/05/2026 13:49:08] Sistema de votação aberto!
+[13/05/2026 13:50:35] Sistema de votação aberto!
+[13/05/2026 13:51:55] Sistema de votação aberto!
+[13/05/2026 13:52:45] Sistema de votação aberto!
+[13/05/2026 13:54:12] Erro durante votação: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'VARCHAR), 4) = LEFT('2346', 4)
+            AND senha_ele = 'LUM4523'' at line 2
+[13/05/2026 13:57:24] Tentativa de login inválido!
+[13/05/2026 13:59:58] Tentativa de login inválido!
+[13/05/2026 14:01:14] Tentativa de login inválido!
+[13/05/2026 14:12:41] Login Realizado Por: primeiros 4 dígitos do CPF: 1234
+[13/05/2026 14:12:56] Erro durante votação: Could not process parameters: str(1234), it must be of type list, tuple or dict
+[13/05/2026 14:16:09] Login Realizado Por: primeiros 4 dígitos do CPF: 6663
+[13/05/2026 14:16:13] Erro durante votação: Could not process parameters: str(6663), it must be of type list, tuple or dict
+[13/05/2026 14:17:46] Login Realizado Por: primeiros 4 dígitos do CPF: 6663
+[13/05/2026 14:17:49] Erro durante votação: Could not process parameters: str(1), it must be of type list, tuple or dict
+[13/05/2026 14:18:51] Login Realizado Por: primeiros 4 dígitos do CPF: 6663
+[13/05/2026 14:18:53] Erro durante votação: Could not process parameters: int(4), it must be of type list, tuple or dict
+[13/05/2026 14:21:07] Login Realizado Por: primeiros 4 dígitos do CPF: 6663
+[13/05/2026 14:21:08] Voto registrado | Título: 6663 | Candidato: 4
+[13/05/2026 14:34:26] Sistema de votação aberto!
+[13/05/2026 14:35:06] Login Realizado Por: primeiros 4 dígitos do CPF: 5408
+[13/05/2026 14:35:24] Voto registrado | Candidato: 1
+[13/05/2026 14:46:18] Sistema de votação aberto!
+[13/05/2026 14:46:57] Login Realizado Por: primeiros 4 dígitos do CPF: 1112
+[13/05/2026 14:47:03] Voto registrado | Candidato: 4 | Protocolo de Votacao: VWW260473822
+[13/05/2026 14:56:19] Sistema de votação aberto!
+[13/05/2026 14:56:54] Login Realizado Por: primeiros 4 dígitos do CPF: 9320
+[13/05/2026 14:57:02] Voto registrado | Candidato: 3 | Protocolo de Votacao: VIP260351321
