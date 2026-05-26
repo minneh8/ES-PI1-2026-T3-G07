@@ -13,73 +13,82 @@ def registrar_log(mensagem):
 
 #Funcão para realizar votação, onde o usuário digita o número do candidato e o voto é registrado
 def realizar_votacao_func():
-    db.conecta_mysql()
-    #Verificar se o sistema está aberto
-    if estado.sistema_votacao_aberto == False:
-        print("\nSistema de votação fechado! Você não pode votar agora.")
-        return
-    try:            #mostrando os candidatos usando FOR
-        print("\n===== CANDIDATOS =====")
-
-        voto = input("\nDigite o número do candidato: ")               
-
-        #Verificando se o candidato existe
-        #Query para selecionar todos os candidatos do MySQL via número
-        query_validacao = """
-        SELECT * FROM candidatos
-        WHERE num = %s
-        """
-        confirmar_voto = input("\nConfirma o voto? (S/N): ")
-        if confirmar_voto.upper() != "S":
-            print("Voto cancelado!")
+        db.conecta_mysql()
+        #Verificar se o sistema está aberto
+        if estado.sistema_votacao_aberto == False:
+            print("\nSistema de votação fechado! Você não pode votar agora.")
             return
-        
-        estado.cursor.execute(query_validacao, (voto,))
+        try:            #mostrando os candidatos usando FOR
+            print("\n===== VOTAÇÃO =====")
 
-        #salvando em uma variável
-        candidato_existe = estado.cursor.fetchone()
+            voto = input("Digite o número do candidato: ")               
 
-        if candidato_existe == None:
-            print("Candidato não encontrado!")
-            registrar_log(f"Tentativa de voto inválido | CPF: {estado.cpf_eleitor}")
-            return
-        
-        #Inserindo o voto no MySQL
-        #Query de Update para inserir o voto na tabela votos
-        cpf_completo = estado.eleitor[0]
+            #Verificando se o candidato existe
+            #Query para selecionar todos os candidatos do MySQL via número
+            query_validacao = """
+            SELECT * FROM candidatos
+            WHERE num = %s
+            """
+            confirmar_voto = input("\nConfirma o voto? (S/N): ")
+            if confirmar_voto.upper() != "S":
+                print("Voto cancelado!")
+                return
+            
+            estado.cursor.execute(query_validacao, (voto,))
 
-        query_update = """
-        UPDATE eleitores 
-        SET status_ele = 1 
-        WHERE cpf_ele = %s
-        """
-        estado.cursor.execute(query_update, (cpf_completo,))
+            #salvando em uma variável
+            candidato_existe = estado.cursor.fetchone()
 
-        # Salvando alterações no banco
-        estado.connection.commit()
-        print("Voto registrado com sucesso!")
-        v.gerar_protocolo(voto)
-        query_voto = """
-        INSERT INTO votos (num_cand, nome_cand)
-        VALUES (%s, %s)
-        """
-        estado.cursor.execute(query_voto, ( voto, candidato_existe[1]))
-        estado.connection.commit()
-        #Registrando no Log de votações
-        registrar_log(f"Voto registrado | Candidato: {voto} | Protocolo de Votacao: {estado.protocolo}")
+            if candidato_existe == None:
+                print("Candidato não encontrado!")
+                registrar_log(f"Tentativa de voto inválido | CPF: {estado.cpf_eleitor}")
+                return
+            else:
+                print(f"\nCandidato: {candidato_existe[1]}")
+            
+            #Inserindo o voto no MySQL
+            #Query de Update para inserir o voto na tabela votos
+            cpf_completo = estado.eleitor[0]
 
-    #Fazendo o except para caso haja erros durante o processo
-    except Exception as erro: #Ao usar "AS ERRO" a causa do erro é salva em uma variável
-        print(f"Erro durante votação: {erro}")
+            query_update = """
+            UPDATE eleitores 
+            SET status_ele = 1 
+            WHERE cpf_ele = %s
+            """
+            estado.cursor.execute(query_update, (cpf_completo,))
 
-        #Registrando erro no log
-        registrar_log(f"Erro durante votação: {erro}")
+            # Salvando alterações no banco
+            estado.connection.commit()
+            print("Voto registrado com sucesso!")
+            v.gerar_protocolo(voto)
+            query_voto = """
+            INSERT INTO votos (num_cand, nome_cand, protocolo)
+            VALUES (%s, %s, %s)
+            """
+            estado.cursor.execute(query_voto, ( voto, candidato_existe[1], estado.protocolo))
+            estado.connection.commit()
+            #Registrando no Log de votações
+            registrar_log(f"Voto registrado | Candidato: {voto} | Protocolo de Votacao: {estado.protocolo}\n")
 
-    finally: #O finally é a terceira causa do TRY e serve para executar o ultimo comando quando acaba o bloco que deseja executar
-        #serve para executar um bloco de código independentemente de dar erro ou não.
-        #Fechando a conexão com o banco de dados
-        estado.cursor.close()
-        estado.connection.close()
+            #Fechando a conexão com o banco de dados
+            estado.cursor.close()
+            estado.connection.close()
+
+            #Menu de Sistema de Votação
+            menu_sistem_votacao_func()
+
+        #Fazendo o except para caso haja erros durante o processo
+        except Exception as erro: #Ao usar "AS ERRO" a causa do erro é salva em uma variável
+            print(f"Erro durante votação")
+
+            #Registrando erro no log
+            registrar_log(f"Erro durante votação: {erro}")
+
+        finally: #O finally é a terceira causa do TRY e serve para executar o ultimo comando quando acaba o bloco que deseja executar
+            #serve para executar um bloco de código independentemente de dar erro ou não.
+            #Fechando a conexão com o banco de dados
+            estado.cursor.close()
+            estado.connection.close()
 
 
 
@@ -95,15 +104,33 @@ def menu_votacao_func():
                     print("\n Voltando... ")
                     return(main.menu_principal_func())
                 case 1:
+                    #Eleitor[4] = Mesario
                     print("Começar a votação")
                     v.login_func()
                     if estado.eleitor[4] == True:
-                        menu_sistem_votacao_func()
+                        if estado.sistema_votacao_aberto == False:
+                            db.conecta_mysql()
+                            query_zere_votos = """
+                            DELETE FROM votos
+                            """
+                            estado.cursor.execute(query_zere_votos)
+                            estado.connection.commit()
+                            estado.sistema_votacao_aberto = True
+                            query_reset = """
+                            UPDATE eleitores 
+                            SET status_ele = 0
+                            """
+                            estado.cursor.execute(query_reset)
+                            estado.connection.commit()
+                            menu_sistem_votacao_func()
+                            break
+                        else:
+                            print("Sistema de votação ja aberto!")
+                            return
                     else:
                         print("Eleitor Comum")
                         print("Apenas eleitores mesarios podem iniciar o sistema de votação.")
                         return
-                    break
                 case 2:
                     print("Auditoria")
                     menu_auditoria_func()
@@ -159,7 +186,7 @@ def menu_sistem_votacao_func():
     
     while estado.menu_votacao == 1:
         try:
-            print("\n0 - Voltar\n1 - Comecar Votação\n2 - Fechar Sistema de Votação")
+            print("\n0 - Voltar\n1 - Votar\n2 - Fechar Sistema de Votação")
             menu_sistem_votacao= int(input("Escolha a opção desejada: "))
             db.conecta_mysql()
             match menu_sistem_votacao:
@@ -167,37 +194,31 @@ def menu_sistem_votacao_func():
                     print("\nVoltando...")
                     return(menu_votacao_func())
                 case 1:
-                    if (estado.sistema_votacao_aberto == True):
-                        print("Sistema de votação já aberto!")
-                    elif  estado.sistema_votacao_aberto == False:
-                        #Variável global de controle, para não ter erros - Isso vai controlar se a urna está aberta.
-                        estado.sistema_votacao_aberto = True
-                        #Chamando a função pra registrar no logs.txt
-                        registrar_log("Sistema de votação aberto!")
-                        print("Sistema de votação aberto com sucesso!")
-                        if estado.sistema_votacao_aberto == True: 
-                            query_zere_votos = """
-                            DELETE FROM votos
-                            """
-                            estado.cursor.execute(query_zere_votos)
-                            estado.connection.commit()
-                            realizar_votacao_func() 
-                            break
+                    v.login_func()
+                    if estado.eleitor[3] == False:
+                        realizar_votacao_func() 
+                        break
+                    else:
+                        print("Esse Eleitor ja votou!")
+                        menu_sistem_votacao_func()
                 case 2:
-                        #Variável global de controle, para não ter erros 
-                        estado.sistema_votacao_aberto = False
-                        query_reset = """
-                        UPDATE eleitores 
-                        SET status_ele = 0
-                        """
-                        estado.cursor.execute(query_reset)
-                        estado.connection.commit()
-                        #Registrando log
-                        registrar_log("Sistema de votação encerrado")
-                        print("Encerrando Sistema de Votação...")
+                        if estado.sistema_votacao_aberto == False:
+                            print("Sistema de votação ja fechado!")
+                            menu_votacao_func()
+                        else:
+                            #Variável global de controle, para não ter erros
+                            v.login_func() 
+                            if estado.eleitor[4] == False:
+                                print("Eleitor Comum")
+                                print("Apenas eleitores mesarios podem fechar o sistema de votação.")
+                                return
+                            else:
+                                #Registrando log
+                                estado.sistema_votacao_aberto = False
+                                registrar_log("Sistema de votação encerrado")
+                                print("Encerrando Sistema de Votação...")
 
-                        import menu_principal as main
-                        return(main.menu_principal_func())
+                                menu_votacao_func()
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:

@@ -184,19 +184,13 @@ def login_func():
         if cg.eleitor[4] == 1:
             print("Eleitor Mesario!")
             v.registrar_log(f"Eleitor Mesario!")
-            return
+            print("\nLogin realizado com sucesso!")
+            v.registrar_log(f"Login Realizado Por: {cg.cpf_eleitor}")
         else: 
             print("Eleitor Comum!")
             v.registrar_log(f"Eleitor Comum!")
-        #Verificando se o eleitor já votou
-        if( cg.eleitor[3] == 1):
-            print("Este eleitor já votou")
-            v.registrar_log("Tentativa de voto duplo!")
-            return
-        
-        else:
             print("\nLogin realizado com sucesso!")
-            v.registrar_log(f"Login Realizado Por: primeiros 4 dígitos do CPF: {cg.cpf_eleitor}")
+            v.registrar_log(f"Login Realizado Por: {cg.cpf_eleitor}")
 
     except db.conecta_mysql.Error as err:
         print(f"Erro ao executar a consulta no MySQL: {err}")

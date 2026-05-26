@@ -135,72 +135,16 @@ def menu_buscacandidatos_func():
 
 
 """Remoção de candidatos"""
-def menu_removecandidatos_func():
-    while estado.menu_candidatos == 2:
-        try:
-            print("\n0 - Voltar\n1 - Remoção de Candidatos")
-            estado.menu_removecandidatos= int(input("Escolha a opção desejada: "))
-            match estado.menu_removecandidatos:
-                case 0:
-                    print("Voltando...")
-                    menu_candidatos_func()
-                    return
-                case 1:
-                    print("Remoção de Candidatos")
-                    break
-                case _:
-                    print("Opção inválida, tente novamente.")
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
 
 """Menu cadastro de candidatos"""
-def menu_cadastramento_cand_func():
-    while estado.menu_candidatos == 5:
-        try:
-            print("\n0 - Voltar\n1 - Cadastramento")
-            estado.menu_cadastramento_cand= int(input("Escolha a opção desejada: "))
-            match estado.menu_cadastramento_cand:
-                case 0:
-                    print("Voltando...")
-                    menu_candidatos_func()
-                    return
-                case 1:
-                    print("Cadastramento")
-                    break
-                case _:
-                    print("Opção inválida, tente novamente.")
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
 
 """Menu Edição de dados - Candidatos"""
-def menu_edicaodados_cand_func():
-    while estado.menu_candidatos == 4:
-        try:
-            print("\n0 - Voltar \n1 - Editar Nome \n2 - Editar Idade \n3 - Editar Partido")
-            estado.menu_edicaodados = int(input("Escolha a opção desejada: "))
-            match estado.menu_edicaodados:
-                case 0:
-                    print("Voltando...")
-                    return(menu_candidatos_func())
-                case 1:
-                    print("Editar Nome")
-                    break
-                case 2:
-                    print("Editar Idade")
-                    break
-                case 3:
-                    print("Editar Partido")
-                    break
-                case _:
-                    print("Opção inválida, tente novamente.")    
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
 
 """Menu Candidatos"""
 def menu_candidatos_func():
     while estado.menu_gerenciamento == 1:
         try:
-            print("\n0 - Voltar\n1 - Lista de Candidatos \n2 - Remoção de Candidatos \n3 - Busca de Candidatos \n4 - Edição de Dados \n5 - Cadastramento")
+            print("\n0 - Voltar\n1 - Lista de Candidatos \n2 - Busca de Candidatos \n")
             estado.menu_candidatos= int(input("Escolha a opção desejada: "))
             match estado.menu_candidatos:
                 case 0:
@@ -211,20 +155,8 @@ def menu_candidatos_func():
                     menu_listacandidatos_func()
                     break    
                 case 2:
-                    print("Remoção de Candidatos")
-                    menu_removecandidatos_func()
-                    break
-                case 3 : 
                     print("Busca de Candidatos")
                     menu_buscacandidatos_func()
-                    break   
-                case 4: 
-                    print("Edição de Dados")
-                    menu_edicaodados_cand_func()
-                    break
-                case 5: 
-                    print("Cadastramento")
-                    menu_cadastramento_cand_func()
                     break
                 case _:
                     print("Opção inválida, tente novamente.")
