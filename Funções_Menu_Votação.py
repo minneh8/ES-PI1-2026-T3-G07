@@ -13,118 +13,73 @@ def registrar_log(mensagem):
 
 #Funcão para realizar votação, onde o usuário digita o número do candidato e o voto é registrado
 def realizar_votacao_func():
+    db.conecta_mysql()
     #Verificar se o sistema está aberto
     if estado.sistema_votacao_aberto == False:
         print("\nSistema de votação fechado! Você não pode votar agora.")
-    else:
-        #Conectando ao banco de dados
-        db.conecta_mysql()
+        return
+    try:            #mostrando os candidatos usando FOR
+        print("\n===== CANDIDATOS =====")
 
-        #solicitar o login do eleitor - feito no cadastramento
-        cpf_eleitor = input("\nDigite os 4 primeiros dígitos do seu CPF para votar: ")
-        if len(cpf_eleitor) != 4:
-            print("CPF inválido.")
+        voto = input("\nDigite o número do candidato: ")               
+
+        #Verificando se o candidato existe
+        #Query para selecionar todos os candidatos do MySQL via número
+        query_validacao = """
+        SELECT * FROM candidatos
+        WHERE num = %s
+        """
+        confirmar_voto = input("\nConfirma o voto? (S/N): ")
+        if confirmar_voto.upper() != "S":
+            print("Voto cancelado!")
             return
-        senha_eleitor = input("Digite a sua senha para votar: ")
+        
+        estado.cursor.execute(query_validacao, (voto,))
 
-        try: 
-            #verificar se o título eleitoral e a senha estão corretos
-            #Query para verificar o login do eleitor e ser jogada no MySQL
-            query_login = """
-            SELECT cpf_ele, senha_ele, status_ele 
-            FROM eleitores
-            WHERE LEFT(cpf_ele, 4) = %s 
-            AND senha_ele = %s;
-            """
+        #salvando em uma variável
+        candidato_existe = estado.cursor.fetchone()
 
-            #Verificando login
-            estado.cursor.execute(query_login, (cpf_eleitor, senha_eleitor))
-            eleitor = estado.cursor.fetchone()
+        if candidato_existe == None:
+            print("Candidato não encontrado!")
+            registrar_log(f"Tentativa de voto inválido | CPF: {estado.cpf_eleitor}")
+            return
+        
+        #Inserindo o voto no MySQL
+        #Query de Update para inserir o voto na tabela votos
+        cpf_completo = estado.eleitor[0]
 
-            if eleitor == None:
-                print("CPF ou senha inválidos!")
-                registrar_log(f"Tentativa de login inválido!")
-                return # Para a função de executar
-            
-            #Verificando se o eleitor já votou
-            elif( eleitor[2] == 1):
-                print("Este eleitor já votou")
-                registrar_log("Tentativa de voto duplo!")
-                return
-            
-            else:
+        query_update = """
+        UPDATE eleitores 
+        SET status_ele = 1 
+        WHERE cpf_ele = %s
+        """
+        estado.cursor.execute(query_update, (cpf_completo,))
 
-                print("\nLogin realizado com sucesso!")
-                registrar_log(f"Login Realizado Por: primeiros 4 dígitos do CPF: {cpf_eleitor}")
+        # Salvando alterações no banco
+        estado.connection.commit()
+        print("Voto registrado com sucesso!")
+        v.gerar_protocolo(voto)
+        query_voto = """
+        INSERT INTO votos (num_cand, nome_cand)
+        VALUES (%s, %s)
+        """
+        estado.cursor.execute(query_voto, ( voto, candidato_existe[1]))
+        estado.connection.commit()
+        #Registrando no Log de votações
+        registrar_log(f"Voto registrado | Candidato: {voto} | Protocolo de Votacao: {estado.protocolo}")
 
-                #mostrando os candidatos usando FOR
-                print("\n===== CANDIDATOS =====")
+    #Fazendo o except para caso haja erros durante o processo
+    except Exception as erro: #Ao usar "AS ERRO" a causa do erro é salva em uma variável
+        print(f"Erro durante votação: {erro}")
 
-                query_candidatos = "SELECT * FROM candidatos" #Seleciona todos os candidatos
-                estado.cursor.execute(query_candidatos)
-                candidatos = estado.cursor.fetchall()
+        #Registrando erro no log
+        registrar_log(f"Erro durante votação: {erro}")
 
-                for candidato in candidatos:
-                    print(f"Número: {candidato[0]} | Nome: {candidato[1]}") # Ordenando os candidatos do MySQL por nome e número
-
-                voto = input("\nDigite o número do candidato: ")               
-
-                #Verificando se o candidato existe
-                #Query para selecionar todos os candidatos do MySQL via número
-                query_validacao = """
-                SELECT * FROM candidatos
-                WHERE num = %s
-                """
-
-                
-                estado.cursor.execute(query_validacao, (voto,))
-
-                #salvando em uma variável
-                candidato_existe = estado.cursor.fetchone()
-
-                if candidato_existe == None:
-                    print("Candidato não encontrado!")
-                    registrar_log(f"Tentativa de voto inválido | CPF: {cpf_eleitor}")
-                    return
-                
-                #Inserindo o voto no MySQL
-                #Query de Update para inserir o voto na tabela votos
-                cpf_completo = eleitor[0]
-
-                query_update = """
-                UPDATE eleitores 
-                SET status_ele = 1 
-                WHERE cpf_ele = %s
-                """
-                estado.cursor.execute(query_update, (cpf_completo,))
-
-                # Salvando alterações no banco
-                estado.connection.commit()
-                print("Voto registrado com sucesso!")
-                v.gerar_protocolo(voto)
-                query_voto = """
-                INSERT INTO votos (num_cand, nome_cand)
-                VALUES (%s, %s)
-                """
-                estado.cursor.execute(query_voto, ( voto, candidato_existe[1]))
-                estado.connection.commit()
-                #Registrando no Log de votações
-                registrar_log(f"Voto registrado | Candidato: {voto} | Protocolo de Votacao: {estado.protocolo}")
-
-        #Fazendo o except para caso haja erros durante o processo
-        except Exception as erro: #Ao usar "AS ERRO" a causa do erro é salva em uma variável
-            print(f"Erro durante votação: {erro}")
-
-            #Registrando erro no log
-            registrar_log(f"Erro durante votação: {erro}")
-
-        finally: #O finally é a terceira causa do TRY e serve para executar o ultimo comando quando acaba o bloco que deseja executar
-            #serve para executar um bloco de código independentemente de dar erro ou não.
-            #Fechando a conexão com o banco de dados
-            estado.cursor.close()
-            estado.connection.close()
-            import menu_principal as main
-            main.menu_principal_func()
+    finally: #O finally é a terceira causa do TRY e serve para executar o ultimo comando quando acaba o bloco que deseja executar
+        #serve para executar um bloco de código independentemente de dar erro ou não.
+        #Fechando a conexão com o banco de dados
+        estado.cursor.close()
+        estado.connection.close()
 
 
 
@@ -132,7 +87,7 @@ def realizar_votacao_func():
 def menu_votacao_func():
     while estado.menu_principal == 2:
         try:
-            print("0 - Voltar \n1 - Votação \n2 - Auditoria \n3 - Resultado")
+            print("0 - Voltar \n1 - Começar a votação \n2 - Auditoria \n3 - Resultado")
             estado.menu_votacao= int(input("Escolha a opção desejada: "))
             match estado.menu_votacao:
                 case 0:
@@ -140,8 +95,14 @@ def menu_votacao_func():
                     print("\n Voltando... ")
                     return(main.menu_principal_func())
                 case 1:
-                    print("Abir Sistema de Votação")
-                    menu_sistem_votacao_func()
+                    print("Começar a votação")
+                    v.login_func()
+                    if estado.eleitor[4] == True:
+                        menu_sistem_votacao_func()
+                    else:
+                        print("Eleitor Comum")
+                        print("Apenas eleitores mesarios podem iniciar o sistema de votação.")
+                        return
                     break
                 case 2:
                     print("Auditoria")
@@ -264,3 +225,4 @@ def menu_resultado_func():
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")
+

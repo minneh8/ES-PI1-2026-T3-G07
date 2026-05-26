@@ -1,0 +1,4 @@
+[25/05/2026 14:00:04] Eleitor Mesario!
+[25/05/2026 14:00:40] Sistema de votação aberto!
+[25/05/2026 14:01:37] Eleitor Comum!
+[25/05/2026 14:01:37] Login Realizado Por: primeiros 4 dígitos do CPF: 1234

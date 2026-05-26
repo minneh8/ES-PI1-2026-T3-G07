@@ -37,3 +37,6 @@ cpfvalido = True
 teleitorvalido = 0
 sistema_votacao_aberto = False
 protocolo = 0
+mesario = 0
+cpf_eleitor = 0
+eleitor = 0

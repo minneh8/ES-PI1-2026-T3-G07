@@ -1,5 +1,6 @@
 # Validação do CPF do usuário
 import CondicoesGlobais as cg
+import DATABASE as db
 def validacao_cpf_func(cpf):   
     
     """ Validação do CPF, onde o usuário digita o número e o programa verifica se é um CPF """
@@ -145,6 +146,66 @@ def gerar_protocolo(voto):
 
     cg.protocolo = f"{prefixo}{letras_aleatorias}{ano}{candidato_formatado}{digitos_aleatorios}"
     print(f"Seu Protocolo de Votação: {cg.protocolo}")
+
+def login_func():
+    #Conectando ao banco de dados
+    import Funções_Menu_Votação as v
+    db.conecta_mysql()
+
+        #solicitar o login do eleitor - feito no cadastramento
+    cg.cpf_eleitor = input("\nDigite os 4 primeiros dígitos do seu CPF para votar: ")
+    if len(cg.cpf_eleitor) != 4:
+            print("CPF inválido.")
+            return
+    teleitor = input("Digite os 4 primeiros dígitos do seu Título Eleitoral para votar: ")
+    if len(teleitor) != 4:
+            print("Título Eleitor inválido.")
+            return
+    senha_eleitor = input("Digite a sua senha para votar: ")
+
+    try: 
+        #verificar se o título eleitoral e a senha estão corretos
+        #Query para verificar o login do eleitor e ser jogada no MySQL
+        query_login = """
+        SELECT cpf_ele, titulo_ele, senha_ele, status_ele, mesario_ele 
+        FROM eleitores
+        WHERE LEFT(cpf_ele, 4) = %s and LEFT(titulo_ele, 4) = %s
+        AND senha_ele = %s;
+        """
+
+        #Verificando login
+        cg.cursor.execute(query_login, (cg.cpf_eleitor, teleitor ,senha_eleitor))
+        cg.eleitor = cg.cursor.fetchone()
+
+        if cg.eleitor == None:
+            print("CPF, Titulo Eleitoral ou Senha inválidos!")
+            v.registrar_log(f"Tentativa de login inválido!")
+            return # Para a função de executar
+        if cg.eleitor[4] == 1:
+            print("Eleitor Mesario!")
+            v.registrar_log(f"Eleitor Mesario!")
+            return
+        else: 
+            print("Eleitor Comum!")
+            v.registrar_log(f"Eleitor Comum!")
+        #Verificando se o eleitor já votou
+        if( cg.eleitor[3] == 1):
+            print("Este eleitor já votou")
+            v.registrar_log("Tentativa de voto duplo!")
+            return
+        
+        else:
+            print("\nLogin realizado com sucesso!")
+            v.registrar_log(f"Login Realizado Por: primeiros 4 dígitos do CPF: {cg.cpf_eleitor}")
+
+    except db.conecta_mysql.Error as err:
+        print(f"Erro ao executar a consulta no MySQL: {err}")
+        return
+    finally:
+        cg.cursor.close()
+        cg.connection.close()
+
+
 
 
     

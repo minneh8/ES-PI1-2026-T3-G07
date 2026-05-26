@@ -405,13 +405,17 @@ def cadastro_func():
             break
     except ValueError:
         print("Titulo Eleitor inválido.")
-
+    estado.mesario = input("Você quer ser mesario? (S/N): ").upper()
+    if estado.mesario == "S":
+        estado.mesario = True
+    else:
+        estado.mesario = False
     v.gerador_senha_func()
     print(f"Sua senha gerada foi: {estado.senha}")
 
 
-    estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele) VALUES (%s, %s, %s, %s)"
-    estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha)
+    estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele, mesario_ele) VALUES (%s, %s, %s, %s, %s)"
+    estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha, estado.mesario)
     estado.cursor.execute(estado.cadastro, estado.valores)
     estado.connection.commit()
     estado.cursor.close()

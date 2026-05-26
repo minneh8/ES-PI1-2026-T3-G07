@@ -8,7 +8,7 @@ import Funções_Menu_Votação as vt
 def menu_principal_func(): 
     while estado.menu_principal != 0:
         try:
-            print("\n0 - Encerrar \n1 - Gerenciamento \n2 - Votação \n3 - Realizar Votação")
+            print("\n0 - Encerrar \n1 - Gerenciamento \n2 - Votação")
             estado.menu_principal = int(input("Escolha a opção desejada: "))
 
             match estado.menu_principal:
@@ -23,8 +23,6 @@ def menu_principal_func():
                     print("\n Votação")
                     vt.menu_votacao_func()
                     break
-                case 3:
-                    vt.realizar_votacao_func()
                 case _:
                     print("Opção inválida, tente novamente.")    
         except ValueError:
