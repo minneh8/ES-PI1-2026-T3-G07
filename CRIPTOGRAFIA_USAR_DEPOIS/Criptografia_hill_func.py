@@ -1,48 +1,74 @@
-# Cifra de Hill - Criptografia
-# Deve-se seguir o seguinte fluxo: letras -> números -> blocos -> multiplicação -> mod 26 -> letras
+#Importando biblioteca numpy para trabalhar com matrizes
+import numpy as np
 
-#Criando uma tabela de referenção para posição das letras do alfabeto
-alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#Criando tabela de referência com letras e números
+#Agora também iremos aceitar números de 0 até 9
+alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-#Passando de letra para número: usa-se o comando INDEX() que procura a posição da letra
-def letra_para_numero(letra): # Dentro do parenteses está algo chamado parâmetro, algo que a função de pede que irá determinar o comportamento do código
-    # Nesse caso o parâmetro pede a letra que será retornada como número
-    return(alfabeto.index(letra))
+#Função responsável por converter uma letra/número em posição numérica
+def caractere_para_numero(caractere):
 
-#Passando um número para letra
-def numero_para_letra(num):
-    return (alfabeto[num % 26]) # Entre os colchetes está o comando que delimita que o número fique entre 0 e 25 (mod 26)
+    #O método .index() procura a posição do caractere dentro da string
+    return alfabeto.index(caractere)
 
-def multiplicar_matriz(A, Vetor): 
-    #A representa a matriz chave que será utilizada
-    #Vetor representa o bloco numérico em que a palavra é separada
-    x = A[0][0]*Vetor[0] + A[0][1]*Vetor[1] # Aqui há a multiplicação de matrizes normal, do mesmo jeito que faz no caderno
-    y = A[1][0]*Vetor[0] + A[1][1]*Vetor[1]
-    return([x % 26, y % 26]) # Retorna os valores X e Y no mod 26
+#Função responsável por converter posição numérica em letra/número
+def numero_para_caractere(numero):
 
-# Criptografando com cifra de hill
-def cifra_hill(texto, A):
-    # Texto = palavra a ser criptografada
-    # A = matriz chave
-    # Deve-se primeiro otimizar o texto, deixar padronizado
-    texto = texto.replace(" ", "").upper() #Isso irá retirar todos espaços e deixar tudo em letra maiúscula
+    #O MOD 36 é utilizado porque agora existem:
+    #26 letras + 10 números = 36 caracteres
+    return alfabeto[numero % 36]
 
-    #Após isso, deve-se verificar se o texto possui um número ímpar de caracteres
-    if(len(texto) % 2 != 0):
-        texto += "X" # Adiciona um X no final, mudando para PAR
+#Função responsável por multiplicar a matriz chave pelo bloco numérico
+def multiplicar_matriz(matriz, vetor):
 
-    resultado = "" # String vazia para resultado
+    #Transformando lista comum em arrays numpy
+    matriz_np = np.array(matriz)
+    vetor_np = np.array(vetor)
 
-    for i in range(0, len(texto), 2): #Loop que vai de 0 até o tamanho de texto, pulando/agrupando de 2 em 2!
-        bloco = [letra_para_numero(texto[i]), letra_para_numero(texto[i+1])] # Transforma o grupamento de letras em número
-        cifrado = multiplicar_matriz(A, bloco) #Multiplica o bloco numérico criado pela matriz chave
+    #Realizando multiplicação de matriz
+    resultado = np.dot(matriz_np, vetor_np)
 
-        resultado += numero_para_letra(cifrado[0]) #Define o resultado como o produto da multiplicação do bloco 1
-        resultado += numero_para_letra(cifrado[1]) #Define o resultado como o produto da multiplicação do bloco 2
+    #Aplicando MOD 36 em todos valores
+    resultado = resultado % 36
 
-    return(resultado) # Retorna o valor para a função deixar guardada para ser usada depois
-    
+    #Convertendo novamente para lista comum
+    return resultado.tolist()
 
-#Chamando a função do jeito certo
-#Essa função, se for chamada do jeito que está, não irá funcionar, pois é preciso setar o texto e a matriz chave
+#Função principal de criptografia
+def cifra_hill(texto, matriz_chave):
 
+    #Padronizando texto:
+    #Removendo espaços
+    #Transformando em maiúsculo
+    texto = texto.replace(" ", "").upper()
+
+    #Verificando se todos caracteres existem na tabela
+    for caractere in texto:
+        if caractere not in alfabeto:
+            raise ValueError(f"Caractere inválido: {caractere}")
+
+    #A cifra trabalha em blocos de 2 caracteres
+    #Se quantidade for ímpar, adiciona X no final
+    if len(texto) % 2 != 0:
+        texto += "X"
+
+    #Variável que armazenará resultado final
+    resultado = ""
+
+    #Loop percorrendo o texto de 2 em 2
+    for i in range(0, len(texto), 2):
+        #Separando bloco atual
+        bloco = [
+            caractere_para_numero(texto[i]),
+            caractere_para_numero(texto[i + 1])
+        ]
+
+        #Multiplicando bloco pela matriz chave
+        cifrado = multiplicar_matriz(matriz_chave, bloco)
+
+        #Convertendo números novamente para caracteres
+        resultado += numero_para_caractere(cifrado[0])
+        resultado += numero_para_caractere(cifrado[1])
+
+    #Retornando texto criptografado
+    return resultado
