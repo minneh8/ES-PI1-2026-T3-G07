@@ -249,6 +249,20 @@ def menu_resultado_func():
                     return(menu_votacao_func())
                 case 1:
                     print("Boletim de Urna")
+                    db.conecta_mysql()
+                    cursor = estado.cursor.connection()
+                    query_boletim = """
+                    SELECT 
+                    candidatos.nome,
+                    candidatos.num,
+                    partidos.nome_partido,
+                    COUNT(votos.num_cand) AS total_votos
+                    FROM candidatos
+                    LEFT JOIN votos ON candidatos.num = votos.num_cand
+                    LEFT JOIN partidos ON candidatos.id_part = partidos.id_part
+                    GROUP BY candidatos.num
+                    ORDER BY candidatos.nome ASC
+                    """
                     break   
                 case _:
                     print("Opção inválida, tente novamente.")
