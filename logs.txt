@@ -50,3 +50,12 @@
 [27/05/2026 15:32:40] Login Realizado Por: 9930
 [27/05/2026 15:32:43] Voto registrado | Candidato: 2 | Protocolo de Votacao: VOB260262311
 
+[27/05/2026 15:44:57] Eleitor Mesario!
+[27/05/2026 15:44:57] Login Realizado Por: 9281
+[27/05/2026 15:45:10] Eleitor Mesario!
+[27/05/2026 15:45:10] Login Realizado Por: 9281
+[27/05/2026 15:45:18] Voto registrado | Candidato: 3 | Protocolo de Votacao: VNQ260317058
+
+[27/05/2026 15:46:01] Eleitor Mesario!
+[27/05/2026 15:46:01] Login Realizado Por: 9281
+[27/05/2026 15:46:01] Sistema de votação encerrado
