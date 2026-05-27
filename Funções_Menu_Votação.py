@@ -249,21 +249,34 @@ def menu_resultado_func():
                     return(menu_votacao_func())
                 case 1:
                     db.conecta_mysql()
+                    estado.cursor = estado.connection.cursor(dictionary=True)
                     query_boletim = """
                     SELECT 
                     candidatos.nome,
                     candidatos.num,
                     partidos.nome_partido,
                     COUNT(votos.num_cand) AS total_votos
+
                     FROM candidatos
-                    LEFT JOIN votos ON candidatos.num = votos.num_cand
-                    LEFT JOIN partidos ON candidatos.id_part = partidos.id_part
-                    GROUP BY candidatos.num
+
+                    LEFT JOIN votos
+                        ON candidatos.num = votos.num_cand
+
+                    LEFT JOIN partidos
+                        ON candidatos.id_part = partidos.id_part
+
+                    GROUP BY 
+                        candidatos.num,
+                        candidatos.nome,
+                        partidos.nome_partido
+
                     ORDER BY candidatos.nome ASC
                     """
                     estado.cursor.execute(query_boletim)
                     resultados = estado.cursor.fetchall()
-                    print("/n=== BOLETIM DE URNA ===")
+                    print("\n=== BOLETIM DE URNA ===\n")
+                    maior = -1
+                    vencedor = None
                     for candidato in resultados:
 
                         print(
