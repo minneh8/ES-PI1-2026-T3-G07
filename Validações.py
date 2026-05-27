@@ -1,6 +1,7 @@
 # Validação do CPF do usuário
 import CondicoesGlobais as cg
 import DATABASE as db
+import Criptografia_hill_func as crypt
 def validacao_cpf_func(cpf):   
     
     """ Validação do CPF, onde o usuário digita o número e o programa verifica se é um CPF """
@@ -162,7 +163,12 @@ def login_func():
             print("Título Eleitor inválido.")
             return
     senha_eleitor = input("Digite a sua senha para votar: ")
-
+    matrizcripto = [
+        [1, 1],
+        [0, 1]
+    ]
+    cpfcripto = crypt.cifra_hill(cg.cpf_eleitor, matrizcripto)
+    senhacrypto = crypt.cifra_hill(senha_eleitor, matrizcripto)
     try: 
         #verificar se o título eleitoral e a senha estão corretos
         #Query para verificar o login do eleitor e ser jogada no MySQL
@@ -174,7 +180,7 @@ def login_func():
         """
 
         #Verificando login
-        cg.cursor.execute(query_login, (cg.cpf_eleitor, teleitor ,senha_eleitor))
+        cg.cursor.execute(query_login, (cpfcripto, teleitor , senhacrypto))
         cg.eleitor = cg.cursor.fetchone()
 
         if cg.eleitor == None:
@@ -198,7 +204,6 @@ def login_func():
     finally:
         cg.cursor.close()
         cg.connection.close()
-
 
 
 

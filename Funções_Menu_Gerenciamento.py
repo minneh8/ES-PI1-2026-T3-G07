@@ -2,6 +2,8 @@
 import CondicoesGlobais as estado
 import DATABASE as db
 import Validações as v
+import Criptografia_hill_func as crypt
+import numpy as np
 def menu_gerenciamento_func():
     while estado.menu_principal == 1:
         try:
@@ -344,12 +346,21 @@ def cadastro_func():
         estado.mesario = False
     v.gerador_senha_func()
     print(f"Sua senha gerada foi: {estado.senha}")
+    np.matriz = [
+        [1, 1],
+        [0, 1]
+    ]
+
+    cpfcripto = crypt.cifra_hill(estado.cpf, np.matriz)
+
+    senhacripto = crypt.cifra_hill(estado.senha, np.matriz)
 
 
     estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele, mesario_ele) VALUES (%s, %s, %s, %s, %s)"
-    estado.valores = (estado.nome, estado.cpf, estado.teleitor, estado.senha, estado.mesario)
+    estado.valores = (estado.nome, cpfcripto, estado.teleitor, senhacripto, estado.mesario)
     estado.cursor.execute(estado.cadastro, estado.valores)
     estado.connection.commit()
     estado.cursor.close()
     estado.connection.close()
     print("Cadastro realizado com sucesso!")
+    

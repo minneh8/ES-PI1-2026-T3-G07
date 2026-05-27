@@ -3,6 +3,7 @@ import CondicoesGlobais as estado
 from datetime import datetime
 import DATABASE as db
 import Validações as v
+import Criptografia_hill_func as crypt
 
 #Resgistrando o LOG de votação
 def registrar_log(mensagem):
@@ -29,43 +30,50 @@ def realizar_votacao_func():
             SELECT * FROM candidatos
             WHERE num = %s
             """
-            confirmar_voto = input("\nConfirma o voto? (S/N): ")
+            estado.cursor.execute(query_validacao, (voto,))
+            candidato_existe = estado.cursor.fetchone()
+
+            confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ")
             if confirmar_voto.upper() != "S":
                 print("Voto cancelado!")
                 return
             
-            estado.cursor.execute(query_validacao, (voto,))
-
-            #salvando em uma variável
-            candidato_existe = estado.cursor.fetchone()
 
             if candidato_existe == None:
                 print("Candidato não encontrado!")
                 registrar_log(f"Tentativa de voto inválido | CPF: {estado.cpf_eleitor}")
                 return
-            else:
-                print(f"\nCandidato: {candidato_existe[1]}")
             
             #Inserindo o voto no MySQL
             #Query de Update para inserir o voto na tabela votos
-            cpf_completo = estado.eleitor[0]
+
+            matrizcripto = [
+                    [1, 1],
+                    [0, 1]
+                ]
+            cpfcripto = crypt.cifra_hill(estado.cpf_eleitor, matrizcripto)
 
             query_update = """
             UPDATE eleitores 
             SET status_ele = 1 
-            WHERE cpf_ele = %s
+            WHERE LEFT(cpf_ele, 4) = %s
             """
-            estado.cursor.execute(query_update, (cpf_completo,))
+            estado.cursor.execute(query_update, (cpfcripto,))
 
             # Salvando alterações no banco
             estado.connection.commit()
             print("Voto registrado com sucesso!")
             v.gerar_protocolo(voto)
+            matriz = [
+                [1, 1],
+                [0, 1]
+            ]
+            protocolocripto = crypt.cifra_hill(estado.protocolo, matriz)
             query_voto = """
             INSERT INTO votos (num_cand, nome_cand, protocolo)
             VALUES (%s, %s, %s)
             """
-            estado.cursor.execute(query_voto, ( voto, candidato_existe[1], estado.protocolo))
+            estado.cursor.execute(query_voto, ( voto, candidato_existe[1], protocolocripto))
             estado.connection.commit()
             #Registrando no Log de votações
             registrar_log(f"Voto registrado | Candidato: {voto} | Protocolo de Votacao: {estado.protocolo}\n")
@@ -195,7 +203,7 @@ def menu_sistem_votacao_func():
                     return(menu_votacao_func())
                 case 1:
                     v.login_func()
-                    if estado.eleitor[3] == False:
+                    if estado.eleitor[3] == False and estado.eleitor != None:
                         realizar_votacao_func() 
                         break
                     else:
