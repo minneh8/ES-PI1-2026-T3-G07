@@ -274,7 +274,7 @@ def menu_resultado_func():
                     """
                     estado.cursor.execute(query_boletim)
                     resultados = estado.cursor.fetchall()
-                    print("\n=== BOLETIM DE URNA ===\n")
+                    print("\n===== BOLETIM DE URNA =====\n")
                     maior = -1
                     vencedor = None
                     for candidato in resultados:
@@ -300,6 +300,38 @@ def menu_resultado_func():
                     )
 
                     estado.cursor.close()
+                    estado.connection.close()
+                    break
+                
+                case 2:
+                    db.conecta_mysql()
+                    cursor = estado.connection.cursor()
+                    query_total = """
+                    SELECT COUNT(*) FROM eleitores
+                    """
+                    cursor.execute(query_total)
+                    total_eleitores = cursor.fetchone()[0]
+
+                    query_votaram = """
+                    SELECT COUNT(*) FROM eleitores
+                    WHERE status_ele = 1
+                    """
+                    cursor.execute(query_votaram)
+                    total_votaram = cursor.fetchone()[0]
+                    percentual = 0
+
+                    if total_eleitores > 0:
+                        percentual = (
+                            total_votaram / total_eleitores
+                        ) * 100
+
+                    print("\n===== ESTATÍSTICAS =====\n")
+
+                    print(f"Eleitores cadastrados: {total_eleitores}")
+                    print(f"Eleitores que votaram: {total_votaram}")
+                    print(f"Comparecimento: {percentual:.2f}%")
+
+                    cursor.close()
                     estado.connection.close()
                     break
 
