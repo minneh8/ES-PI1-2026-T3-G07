@@ -249,7 +249,6 @@ def menu_resultado_func():
                     return(menu_votacao_func())
                 case 1:
                     db.conecta_mysql()
-                    cursor = estado.cursor.connection()
                     query_boletim = """
                     SELECT 
                     candidatos.nome,
@@ -262,8 +261,8 @@ def menu_resultado_func():
                     GROUP BY candidatos.num
                     ORDER BY candidatos.nome ASC
                     """
-                    cursor.execute(query_boletim)
-                    resultados = cursor.fetchall()
+                    estado.cursor.execute(query_boletim)
+                    resultados = estado.cursor.fetchall()
                     print("/n=== BOLETIM DE URNA ===")
                     for candidato in resultados:
 
@@ -287,12 +286,10 @@ def menu_resultado_func():
                         f"Votos: {vencedor['total_votos']}"
                     )
 
-                    cursor.close()
+                    estado.cursor.close()
                     estado.connection.close()
-                    break 
-                case 2:
-                    
-                      
+                    break
+
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
