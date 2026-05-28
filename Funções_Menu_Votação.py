@@ -334,6 +334,40 @@ def menu_resultado_func():
                     cursor.close()
                     estado.connection.close()
                     break
+                case 3: 
+                   db.conecta_mysql() 
+                   
+                   cursor = estado.connection.cursor(dictionary=True) 
+                   
+                   query = """ SELECT partidos.nome_partido, 
+                   COUNT(votos.num_cand) 
+                   AS total_votos
+                   
+                   FROM votos 
+
+                   JOIN candidatos 
+                   ON votos.num_cand = candidatos.num 
+                   
+                   JOIN partidos 
+                   ON candidatos.id_part = partidos.id_part 
+                   
+                   GROUP BY partidos.nome_partido 
+                   
+                   ORDER BY total_votos DESC """ 
+                   
+                   cursor.execute(query) 
+                   
+                   resultados = cursor.fetchall() 
+                   
+                   print("\n===== VOTOS POR PARTIDO =====\n") 
+                   
+                   for partido in resultados: 
+                    
+                     print( f"Partido: {partido['nome_partido']} "
+                            f"| Votos: {partido['total_votos']}" ) 
+                     
+                   cursor.close() 
+                   estado.connection.close()  
 
                 case _:
                     print("Opção inválida, tente novamente.")
