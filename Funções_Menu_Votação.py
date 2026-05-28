@@ -369,6 +369,43 @@ def menu_resultado_func():
                    cursor.close() 
                    estado.connection.close()  
 
+                case 4:
+                    db.conecta_mysql() 
+
+                    cursor = estado.connection.cursor() 
+
+                    query_votos = """ SELECT COUNT(*) 
+                    FROM votos 
+                    """ 
+
+                    cursor.execute(query_votos) 
+                    total_votos = cursor.fetchone()[0] 
+
+                    query_eleitores = """ 
+                    SELECT COUNT(*) 
+                    FROM eleitores 
+                    WHERE status_ele = 1 
+                    """ 
+
+                    cursor.execute(query_eleitores) 
+                    total_eleitores = cursor.fetchone()[0] 
+
+                    print("\n===== VALIDAÇÃO DE INTEGRIDADE =====\n") 
+                    print(f"Votos registrados: {total_votos}") 
+
+                    print( 
+                        f'Eleitores com status "Já votou": '
+                        f'{total_eleitores}'
+                          ) 
+                    if total_votos == total_eleitores: 
+                        print("\nIntegridade validada com sucesso!") 
+                    
+                    else: 
+                        print("\nALERTA DE INCONSISTÊNCIA!") 
+                    
+                    cursor.close() 
+                    estado.connection.close() 
+
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
