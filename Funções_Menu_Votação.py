@@ -21,24 +21,22 @@ def realizar_votacao_func():
             return
         try:            #mostrando os candidatos usando FOR
             print("\n===== VOTAÇÃO =====")
+            estado.confirmar_voto = "N"
+            while estado.confirmar_voto != "S":
+                voto = input("Digite o número do candidato: ")               
+                #Verificando se o candidato existe
+                #Query para selecionar todos os candidatos do MySQL via número
+                query_validacao = """
+                SELECT * FROM candidatos
+                WHERE num = %s
+                """
+                estado.cursor.execute(query_validacao, (voto,))
+                candidato_existe = estado.cursor.fetchone()
 
-            voto = input("Digite o número do candidato: ")               
-
-            #Verificando se o candidato existe
-            #Query para selecionar todos os candidatos do MySQL via número
-            query_validacao = """
-            SELECT * FROM candidatos
-            WHERE num = %s
-            """
-            estado.cursor.execute(query_validacao, (voto,))
-            candidato_existe = estado.cursor.fetchone()
-
-            confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ")
-            if confirmar_voto.upper() != "S":
-                print("Voto cancelado!")
-                return
-            
-
+                estado.confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ").upper()
+                if estado.confirmar_voto == "N":
+                    print("Voto cancelado!")
+                
             if candidato_existe == None:
                 print("Candidato não encontrado!")
                 registrar_log(f"Tentativa de voto inválido | CPF: {estado.cpf_eleitor}")
@@ -115,7 +113,7 @@ def menu_votacao_func():
                     #Eleitor[4] = Mesario
                     print("Começar a votação")
                     v.login_func()
-                    if estado.eleitor[4] == True:
+                    if estado.eleitor != None and estado.eleitor[4] == True:
                         if estado.sistema_votacao_aberto == False:
                             db.conecta_mysql()
                             query_zere_votos = """
@@ -241,7 +239,7 @@ def menu_resultado_func():
 
     while estado.menu_votacao == 3:
         try:
-            print("\n0 - Voltar\n1 - Boletim de Urna")
+            print("\n0 - Voltar\n1 - Boletim de Urna\n2 - Estatisticas\n3 - Votos por partido\n4 - Validação de Integridade")
             estado.menu_resultado= int(input("Escolha a opção desejada: "))
             match estado.menu_resultado:
                 case 0:
@@ -301,7 +299,7 @@ def menu_resultado_func():
 
                     estado.cursor.close()
                     estado.connection.close()
-                    break
+                    
                 
                 case 2:
                     db.conecta_mysql()
@@ -333,7 +331,7 @@ def menu_resultado_func():
 
                     cursor.close()
                     estado.connection.close()
-                    break
+                
                 case 3: 
                    db.conecta_mysql() 
                    

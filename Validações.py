@@ -154,15 +154,15 @@ def login_func():
     db.conecta_mysql()
 
         #solicitar o login do eleitor - feito no cadastramento
-    cg.cpf_eleitor = input("\nDigite os 4 primeiros dígitos do seu CPF para votar: ")
+    cg.cpf_eleitor = input("\nDigite os 4 primeiros dígitos do seu CPF: ")
     if len(cg.cpf_eleitor) != 4:
             print("CPF inválido.")
             return
-    teleitor = input("Digite os 4 primeiros dígitos do seu Título Eleitoral para votar: ")
+    teleitor = input("Digite os 4 primeiros dígitos do seu Título Eleitoral: ")
     if len(teleitor) != 4:
             print("Título Eleitor inválido.")
             return
-    senha_eleitor = input("Digite a sua senha para votar: ")
+    senha_eleitor = input("Digite a sua senha: ")
     matrizcripto = [
         [1, 1],
         [0, 1]

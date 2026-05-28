@@ -40,3 +40,4 @@ protocolo = 0
 mesario = 0
 cpf_eleitor = 0
 eleitor = 0
+confirmar_voto = "N"

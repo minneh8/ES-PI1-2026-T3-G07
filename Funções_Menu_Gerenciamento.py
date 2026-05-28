@@ -89,10 +89,9 @@ def menu_listaeleitores_func():
                             return
     
                         for eleitor in resultados:
-                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {eleitor['cpf_ele']} | Título Eleitoral: {eleitor['titulo_ele']}\n")
+                            print(f" Nome: {eleitor['nome_ele']} | Título Eleitoral: {eleitor['titulo_ele']}\n")
                         cursor.close()
                     listaeleitores()
-                    break
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
@@ -167,7 +166,7 @@ def menu_candidatos_func():
 
 """Busca Eleitores"""
 def menu_buscaeleitores_func():
-    while estado.menu_eleitores == 3:
+    while estado.menu_eleitores == 2:
         try:
             print("\n0 - Voltar\n1 - Buscar Eleitores")
             estado.menu_buscaeleitores= int(input("Escolha a opção desejada: "))
@@ -197,7 +196,6 @@ def menu_buscaeleitores_func():
                         cursor.close()
 
                     busca_eleitores(termo)
-                    break
 
                 case _:
                     print("Opção inválida, tente novamente.")
@@ -206,7 +204,7 @@ def menu_buscaeleitores_func():
 
 """Cadastro Eleitores"""
 def menu_cadastramento_ele_func():
-    while estado.menu_eleitores == 5:
+    while estado.menu_eleitores == 3:
         try:
             print("\n0 - Voltar\n1 - Cadastramento de Eleitores")
             estado.menu_cadastramento_ele= int(input("Escolha a opção desejada: "))
@@ -221,61 +219,17 @@ def menu_cadastramento_ele_func():
                     print("\nVoltando...")
                     import menu_principal as main
                     return (main.menu_principal_func())
-                    break
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
             print("Entrada inválida. Digite um número.")    
-
-"""Edição de dados - Eleitor"""
-def menu_edicaodados_ele_func():
-    while estado.menu_eleitores == 4:
-        try:
-            print("\n0 - Voltar\n1 - Editar Nome\n2 - Editar Idade\n3 - Editar Documentos")
-            estado.menu_edicaodados_ele= int(input("Escolha a opção desejada: "))
-            match estado.menu_edicaodados_ele:
-                case 0:
-                    print("Voltando...")
-                    menu_eleitores_func()
-                    return
-                case 1:
-                    print("Editar Nome")
-                    break
-                case 2:
-                    print("Editar Idade")
-                    break
-                case 3: 
-                    print("Editar Documentos")
-                case _:
-                    print("Opção inválida, tente novamente.")
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
-
-"""Remover eleitores"""
-def menu_removeeleitores_func():
-    while estado.menu_eleitores == 2:
-        try:
-            print("\n0 - Voltar\n1 - Remover Eleitores")
-            estado.menu_removeeleitores= int(input("Escolha a opção desejada: "))
-            match estado.menu_removeeleitores:
-                case 0:
-                    print("Voltando...")
-                    menu_eleitores_func()
-                    return
-                case 1:
-                    print("Remover Eleitores")
-                    break
-                case _:
-                    print("Opção inválida, tente novamente.")
-        except ValueError:
-            print("Entrada inválida. Digite um número.")
 
 """Menu Eleitores"""
 def menu_eleitores_func():
    
     while estado.menu_gerenciamento == 2:
         try:
-            print("\n0 - Voltar\n1 - Lista de Eleitores\n2 - Remoção de Eleitores \n3 - Busca de Eleitores \n4 - Edição de Dados \n5 - Cadastramento")
+            print("\n0 - Voltar\n1 - Lista de Eleitores \n2 - Busca de Eleitores \n3 - Cadastramento")
             estado.menu_eleitores= int(input("Escolha a opção desejada: "))
             match estado.menu_eleitores:
                 case 0:
@@ -285,23 +239,14 @@ def menu_eleitores_func():
                 case 1:
                     print("Lista de Eleitores")
                     menu_listaeleitores_func()
-                    break
-                case 2:
-                    print("Remoção de Eleitores")
-                    menu_removeeleitores_func()
-                    break
-                case 3 : 
+                    
+                case 2 : 
                     print("Busca de Eleitores")
                     menu_buscaeleitores_func()
-                    break
-                case 4: 
-                    print("Edição de Dados")
-                    menu_edicaodados_ele_func() 
-                    break
-                case 5: 
+                case 3: 
                     print("Cadastramento")
                     menu_cadastramento_ele_func()
-                    break
+                    
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
