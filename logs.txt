@@ -1,0 +1,20 @@
+[28/05/2026 11:40:26] Eleitor Mesario!
+[28/05/2026 11:40:26] Login Realizado Por: 9930
+[28/05/2026 11:41:20] Eleitor Mesario!
+[28/05/2026 11:41:20] Login Realizado Por: 9930
+[28/05/2026 11:42:26] Erro durante votação: 'NoneType' object is not subscriptable
+[28/05/2026 11:43:40] Eleitor Mesario!
+[28/05/2026 11:43:40] Login Realizado Por: 9930
+[28/05/2026 11:43:57] Eleitor Mesario!
+[28/05/2026 11:43:57] Login Realizado Por: 9930
+[28/05/2026 11:44:06] Eleitor Mesario!
+[28/05/2026 11:44:06] Login Realizado Por: 9930
+[28/05/2026 11:44:13] Voto registrado | Candidato: 1 | Protocolo de Votacao: VGY260124914
+
+[28/05/2026 11:44:56] Eleitor Mesario!
+[28/05/2026 11:44:56] Login Realizado Por: 9281
+[28/05/2026 11:45:03] Voto registrado | Candidato: 2 | Protocolo de Votacao: VKB260206382
+
+[28/05/2026 11:45:17] Eleitor Mesario!
+[28/05/2026 11:45:17] Login Realizado Por: 9930
+[28/05/2026 11:45:17] Sistema de votação encerrado
