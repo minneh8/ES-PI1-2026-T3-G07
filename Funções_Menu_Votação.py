@@ -28,8 +28,15 @@ def realizar_votacao_func():
                 #Verificando se o candidato existe
                 #Query para selecionar todos os candidatos do MySQL via número
                 query_validacao = """
-                SELECT * FROM candidatos
-                WHERE num = %s
+                SELECT candidatos.num,
+                    candidatos.nome,
+                    partidos.nome_partido
+                FROM candidatos
+
+                JOIN partidos
+                ON candidatos.id_part = partidos.id_part
+
+                WHERE candidatos.num = %s
                 """
                 
                 estado.cursor.execute(query_validacao, (voto,))
@@ -48,13 +55,20 @@ def realizar_votacao_func():
                         print("Retornando para votação...")
                         continue
                 #Caso o candidato exista
+
                 else:
-                    estado.confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ").upper()
+                    print("\n===== CONFIRMAÇÃO DE VOTO =====")
+                    print(f"Nome: {candidato_existe[1]}")
+                    print(f"Partido: {candidato_existe[2]}")
+                    print(f"Número: {candidato_existe[0]}")
+                    estado.confirmar_voto = input("\nConfirmar voto? (S/N): ").upper()
+
                     if estado.confirmar_voto == "N":
                         print("Voto cancelado!")
                         continue
-                    
+
                     candidato_nome = candidato_existe[1]
+
             #Inserindo o voto no MySQL
             #Query de Update para inserir o voto na tabela votos
             matrizcripto = [
@@ -100,8 +114,6 @@ def realizar_votacao_func():
             #Fechando a conexão com o banco de dados
             estado.cursor.close()
             estado.connection.close()
-
-
 
 """Menu Votação"""
 def menu_votacao_func():
