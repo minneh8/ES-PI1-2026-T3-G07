@@ -196,6 +196,43 @@ def menu_auditoria_func():
                 case 2:
                     #Exibir protocolos de votação
                     print("Exibindo Protocolos de Votação")
+                    db.conecta_mysql()
+
+                    cursor = estado.connection.cursor(dictionary=True)
+
+                    query_protocolos = """
+                    SELECT protocolo
+                    FROM votos
+                    ORDER BY protocolo ASC
+                    """
+
+                    cursor.execute(query_protocolos)
+
+                    protocolos = cursor.fetchall()
+
+                    # Matriz inversa da cifra de Hill
+                    A_inv = [
+                        [1, -1],
+                        [0, 1]
+                    ]
+
+                    if not protocolos:
+                        print("Nenhum protocolo encontrado.")
+
+                    else:
+                        for protocolo in protocolos:
+
+                            protocolo_criptografado = protocolo["protocolo"]
+
+                            protocolo_correto = crypt.decifra_hill(
+                                protocolo_criptografado,
+                                A_inv
+                            )
+
+                            print(protocolo_correto)
+
+                    cursor.close()
+                    estado.connection.close()
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
