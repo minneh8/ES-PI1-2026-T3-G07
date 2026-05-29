@@ -287,6 +287,14 @@ def menu_resultado_func():
                     """
                     estado.cursor.execute(query_boletim)
                     resultados = estado.cursor.fetchall()
+
+                    query_nulos = """
+                    SELECT COUNT(*) AS votos_nulos
+                    FROM votos
+                    WHERE num_cand = "NULO"
+                    """
+                    estado.cursor.execute(query_boletim)
+                    votos_nulos = estado.cursor.fetchone(["votos_nulos"])
                     print("\n===== BOLETIM DE URNA =====\n")
                     maior = -1
                     vencedor = None
@@ -297,11 +305,13 @@ def menu_resultado_func():
                             f"Número: {candidato['num']} | "
                             f"Partido: {candidato['nome_partido']} | "
                             f"Votos: {candidato['total_votos']}"
-                        )
+                            )
 
                         if candidato['total_votos'] > maior:
                             maior = candidato['total_votos']
                             vencedor = candidato
+
+                    print(f"Quantidade de votos nulos: {votos_nulos["votos_nulos"]}")
 
                     print("\n===== VENCEDOR =====\n")
 
