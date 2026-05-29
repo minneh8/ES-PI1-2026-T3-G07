@@ -133,8 +133,6 @@ def gerador_senha_func():
 
     cg.senha = letra1 + letra2 + letra3 + numeros
 
-
-
 def gerar_protocolo(voto):
     import random
     import string
@@ -185,18 +183,14 @@ def login_func():
 
         if cg.eleitor == None:
             print("CPF, Titulo Eleitoral ou Senha inválidos!")
-            v.registrar_log(f"Tentativa de login inválido!")
+            v.registrar_log("ALERTA: Tentativa de acesso negado")
             return # Para a função de executar
         if cg.eleitor[4] == 1:
             print("Eleitor Mesario!")
-            v.registrar_log(f"Eleitor Mesario!")
             print("\nLogin realizado com sucesso!")
-            v.registrar_log(f"Login Realizado Por: {cg.cpf_eleitor}")
         else: 
             print("Eleitor Comum!")
-            v.registrar_log(f"Eleitor Comum!")
             print("\nLogin realizado com sucesso!")
-            v.registrar_log(f"Login Realizado Por: {cg.cpf_eleitor}")
 
     except db.conecta_mysql.Error as err:
         print(f"Erro ao executar a consulta no MySQL: {err}")

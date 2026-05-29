@@ -4,6 +4,7 @@ import DATABASE as db
 import Validações as v
 import Criptografia_hill_func as crypt
 import numpy as np
+
 def menu_gerenciamento_func():
     while estado.menu_principal == 1:
         try:
