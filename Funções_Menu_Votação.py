@@ -23,27 +23,40 @@ def realizar_votacao_func():
             print("\n===== VOTAÇÃO =====")
             estado.confirmar_voto = "N"
             while estado.confirmar_voto != "S":
-                voto = input("Digite o número do candidato: ")               
+                voto = input("Digite o número do candidato: ")        
+
                 #Verificando se o candidato existe
                 #Query para selecionar todos os candidatos do MySQL via número
                 query_validacao = """
                 SELECT * FROM candidatos
                 WHERE num = %s
                 """
+                
                 estado.cursor.execute(query_validacao, (voto,))
                 candidato_existe = estado.cursor.fetchone()
 
-                estado.confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ").upper()
-                if estado.confirmar_voto == "N":
-                    print("Voto cancelado!")
-                
-            if candidato_existe == None:
-                print("Candidato não encontrado!")
-                # Voto nulo
-            
+                #Caso o candidato não exista
+                if candidato_existe == None:
+                    print("\nCandidato não encontrado!")
+                    # Voto nulo 
+                    voto_nulo = input("Deseja confirmar VOTO NULO? (S/N)").upper()
+                    if voto_nulo == "S":
+                        estado.confirmar_voto = "S"
+                        voto = "NULO"
+                        candidato_nome = "NULO"
+                    else:
+                        print("Retornando para votação...")
+                        continue
+                #Caso o candidato exista
+                else:
+                    estado.confirmar_voto = input(f"\nConfirma o voto em {candidato_existe[1]} (S/N): ").upper()
+                    if estado.confirmar_voto == "N":
+                        print("Voto cancelado!")
+                        continue
+                    
+                    candidato_nome = candidato_existe[1]
             #Inserindo o voto no MySQL
             #Query de Update para inserir o voto na tabela votos
-
             matrizcripto = [
                     [1, 1],
                     [0, 1]
@@ -70,14 +83,10 @@ def realizar_votacao_func():
             INSERT INTO votos (num_cand, nome_cand, protocolo)
             VALUES (%s, %s, %s)
             """
-            estado.cursor.execute(query_voto, ( voto, candidato_existe[1], protocolocripto))
+            estado.cursor.execute(query_voto, (voto, candidato_nome, protocolocripto))
             estado.connection.commit()
             #Registrando no Log de votações
             registrar_log(f"SUCESSO: Voto realizado com sucesso")
-
-            #Fechando a conexão com o banco de dados
-            estado.cursor.close()
-            estado.connection.close()
 
             #Menu de Sistema de Votação
             menu_sistem_votacao_func()
@@ -214,7 +223,6 @@ def menu_sistem_votacao_func():
                                 registrar_log("ALERTA: Tentativa de acesso negado")
                                 return
                             else:
-                                #Registrando log
                                 estado.sistema_votacao_aberto = False
                                 registrar_log("ENCERRAMENTO: Votação finalizada com sucesso")
                                 print("Encerrando Sistema de Votação...")
