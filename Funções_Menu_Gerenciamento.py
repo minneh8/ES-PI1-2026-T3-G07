@@ -15,6 +15,7 @@ import CondicoesGlobais as estado
 import DATABASE as db
 import Validações as v
 import Criptografia_hill_func as crypt
+import Descriptografia_hill_func as decrypt
 import numpy as np
 
 def menu_gerenciamento_func():
@@ -95,8 +96,9 @@ def menu_listacandidatos_func():
                             for candidato in resultados:
                                 print(f"Numero eleitoral: {candidato['num']} | Nome: {candidato['nome']} | Numero do Partido: {candidato['id_part']}\n")
                             cursor.close()
+                            return
+                    
                     lista_candidatos()
-                    break
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
@@ -164,7 +166,7 @@ def menu_buscacandidatos_func():
         None
     """
 
-    while estado.menu_candidatos == 3 : 
+    while estado.menu_candidatos == 2 : 
         try:
             print("\n0 - Voltar\n1 - Busca de Candidatos")
             estado.menu_buscacandidatos= int(input("Escolha a opção desejada: "))
@@ -187,13 +189,13 @@ def menu_buscacandidatos_func():
                             if not resultados:
                                 print("Nenhum eleitor encontrado.")
                                 return
-        
+                            
+
                             for candidato in resultados:
                                 print(f"Numero eleitoral: {candidato['num']} | Nome: {candidato['nome']} | Numero do Partido: {candidato['id_part']}")
                             cursor.close()
+                            return
                         busca_candidatos(termo)
-                        break
-                    
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
@@ -227,7 +229,6 @@ def menu_candidatos_func():
                     menu_listacandidatos_func()
                     break    
                 case 2:
-                    print("Busca de Candidatos")
                     menu_buscacandidatos_func()
                     break
                 case _:
@@ -273,9 +274,10 @@ def menu_buscaeleitores_func():
                         if not resultados:
                             print("Nenhum eleitor encontrado.")
                             return
-    
+                        matriz_inversa = [[1, -1], [0, 1]]
                         for eleitor in resultados:
-                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {eleitor['cpf_ele']} | Título Eleitoral: {eleitor['titulo_ele']}")
+                            cpf_descriptografado = decrypt.decifra_hill(eleitor['cpf_ele'], matriz_inversa)
+                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {cpf_descriptografado} | Título Eleitoral: {eleitor['titulo_ele']}")
                         cursor.close()
 
                     busca_eleitores(termo)
@@ -320,6 +322,122 @@ def menu_cadastramento_ele_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")    
 
+def edicao_dados():
+    """
+    Permite editar os dados de um eleitor cadastrado.
+
+    A função localiza o eleitor através do título eleitoral,
+    exibe os dados atuais descriptografados e permite a
+    alteração das informações desejadas. Após a edição,
+    os dados são criptografados novamente e atualizados
+    no banco de dados.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
+    db.conecta_mysql()
+    try:
+        titulo = input("Digite o título eleitoral do eleitor: ")
+
+        query = """
+        SELECT nome_ele, titulo_ele, cpf_ele, mesario_ele, senha_ele
+        FROM eleitores
+        WHERE titulo_ele = %s
+        """
+
+        estado.cursor.execute(query, (titulo,))
+        eleitor = estado.cursor.fetchone()
+
+        if eleitor is None:
+            print("Eleitor não encontrado.")
+            return
+
+        matriz_inversa = [[1, -1], [0, 1]]
+
+        nome_atual = eleitor[0]
+        titulo_atual = eleitor[1]
+        cpf_atual = decrypt.decifra_hill(eleitor[2], matriz_inversa)
+        mesario_atual = "SIM" if eleitor[3] == 1 else "NÃO"
+        senha_atual = decrypt.decifra_hill(eleitor[4], matriz_inversa)
+
+        print("\n===== DADOS ATUAIS =====")
+        print(f"Nome: {nome_atual}")
+        print(f"CPF: {cpf_atual}")
+        print(f"Título: {titulo_atual}")
+        print(f"Mesário: {mesario_atual}")
+        print(f"Senha: {senha_atual}")
+
+        print("\n===== NOVOS DADOS =====")
+        novo_cpf = input(f"Novo CPF [{cpf_atual}]: ").strip() or cpf_atual
+        if novo_cpf != cpf_atual:  # Só valida se mudou
+            while len(novo_cpf) != 11:
+                print("CPF deve conter 11 dígitos!")
+                novo_cpf = input(f"Novo CPF [{cpf_atual}]: ").strip() or cpf_atual
+            
+            estado.cpf = novo_cpf
+            v.validacao_cpf_func(novo_cpf)
+            while not estado.cpfvalido:
+                novo_cpf = input(f"Novo CPF [{cpf_atual}]: ").strip() or cpf_atual
+                estado.cpf = novo_cpf
+                v.validacao_cpf_func(novo_cpf)
+
+        novo_titulo = input(f"Novo título [{titulo_atual}]: ").strip() or titulo_atual
+        if novo_titulo != titulo_atual:  # Só valida se mudou
+            while len(novo_titulo) != 12:
+                print("Título deve conter 12 dígitos!")
+                novo_titulo = input(f"Novo título [{titulo_atual}]: ").strip() or titulo_atual
+            
+            estado.teleitor = novo_titulo
+            v.validacao_tituloeleitor_func(novo_titulo)
+            while not estado.teleitorvalido:
+                novo_titulo = input(f"Novo título [{titulo_atual}]: ").strip() or titulo_atual
+                estado.teleitor = novo_titulo
+                v.validacao_tituloeleitor_func(novo_titulo)
+
+        novo_nome = input(f"Novo nome [{nome_atual}]: ").strip() or nome_atual
+        novo_mesario = input(f"Mesário (S/N) [{mesario_atual}]: ").strip().upper()
+
+        if novo_mesario == "":
+            novo_mesario = eleitor[3]
+        else:
+            novo_mesario = 1 if novo_mesario == "S" else 0
+
+        estado.nome = novo_nome
+        v.gerador_senha_func()
+        print(f"\nNova senha gerada: {estado.senha}")
+
+        matriz = [[1, 1], [0, 1]]
+        cpf_cripto = crypt.cifra_hill(novo_cpf, matriz)
+        senha_cripto = crypt.cifra_hill(estado.senha, matriz)
+        db.conecta_mysql()
+        query_update = """
+        UPDATE eleitores
+        SET nome_ele = %s,
+            titulo_ele = %s,
+            cpf_ele = %s,
+            mesario_ele = %s,
+            senha_ele = %s
+        WHERE titulo_ele = %s
+        """
+
+        estado.cursor.execute(
+            query_update,
+            (novo_nome, novo_titulo, cpf_cripto, novo_mesario, senha_cripto, titulo)
+        )
+
+        estado.connection.commit()
+        print("\nDados atualizados com sucesso!")
+
+    except Exception as erro:
+        print(f"Erro ao editar eleitor: {erro}")
+    finally:
+        estado.cursor.close()
+        estado.connection.close()
+
 def menu_eleitores_func():
 
     """
@@ -337,7 +455,7 @@ def menu_eleitores_func():
 
     while estado.menu_gerenciamento == 2:
         try:
-            print("\n0 - Voltar\n1 - Lista de Eleitores \n2 - Busca de Eleitores \n3 - Cadastramento")
+            print("\n0 - Voltar\n1 - Lista de Eleitores \n2 - Busca de Eleitores \n3 - Cadastramento \n4 - Edição de dados")
             estado.menu_eleitores= int(input("Escolha a opção desejada: "))
             match estado.menu_eleitores:
                 case 0:
@@ -354,7 +472,9 @@ def menu_eleitores_func():
                 case 3: 
                     print("Cadastramento")
                     menu_cadastramento_ele_func()
-                    
+                case 4:
+                    print("Edição de dados")
+                    edicao_dados()
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
