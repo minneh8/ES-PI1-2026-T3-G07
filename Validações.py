@@ -23,7 +23,7 @@ def validacao_cpf_func(cpf):
     Returns:
         None
     """
-    
+
     n1 = int(cg.cpf[0])
     n2 = int(cg.cpf[1])
     n3 = int(cg.cpf[2])
@@ -67,14 +67,32 @@ def validacao_cpf_func(cpf):
             elif verifd2 >= 2:
                 verifd2 = 11 - verifd2
                 if verifd2 == d2:
-                    print("CPF Válido!")
-                    cg.cpfvalido = True      
+                    db.conecta_mysql()
+
+                    matrizcripto = [[1,1],
+                                    [0,1]]
+                    cpfcripto = crypt.cifra_hill(cpf[:4], matrizcripto)
+                    query = "SELECT COUNT(*) FROM eleitores WHERE cpf_ele LIKE %s"
+                    cg.cursor.execute(query, (cpfcripto + '%',))  # Busca pelos 4 primeiros dígitos
+                    
+                    if cg.cursor.fetchone()[0] > 0:
+                        print("CPF já cadastrado no sistema!")
+                        cg.cpfvalido = False
+                    else:
+                        print("CPF Válido!")
+                        cg.cpfvalido = True    
+                    
+                    cg.cursor.close()
+                    cg.connection.close()  
                 else:
                     print("CPF Inválido!")
                     cg.cpfvalido = False
         else:
             print("CPF Inválido!")
             cg.cpfvalido = False
+
+        
+
 
 # Validação do Título de Eleitor do Usuário
 def validacao_tituloeleitor_func (teleitor):
@@ -140,11 +158,20 @@ def validacao_tituloeleitor_func (teleitor):
     if verifd1 == d11 and verifd2 == d12:
         print(f"Título Eleitor Válido! \t Seu Estado: {cg.estado}")
         cg.teleitorvalido = True
+
+        db.conecta_mysql()
+        query = "SELECT COUNT(*) FROM eleitores WHERE titulo_ele LIKE %s"
+        cg.cursor.execute(query, (cg.teleitor[:4] + '%',))
+        
+        if cg.cursor.fetchone()[0] > 0:
+            print("Título de Eleitor já cadastrado no sistema!")
+            cg.teleitorvalido = False
+        cg.cursor.close()
+        cg.connection.close()
     else: 
         print("Titulo de Eleitor inválido!")
         cg.teleitorvalido = False
-    # Verificação de dígito
-    # Aqui será feito o código de verificação
+
 
 def gerador_senha_func():
 

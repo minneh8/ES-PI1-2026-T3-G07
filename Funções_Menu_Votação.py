@@ -135,11 +135,12 @@ def realizar_votacao_func():
                 [0, 1]
             ]
             protocolocripto = crypt.cifra_hill(estado.protocolo, matriz)
+            datahora_voto = datetime.now()
             query_voto = """
-            INSERT INTO votos (num_cand, nome_cand, protocolo)
+            INSERT INTO votos (num_cand, datahora_voto, protocolo)
             VALUES (%s, %s, %s)
             """
-            estado.cursor.execute(query_voto, (voto, candidato_nome, protocolocripto))
+            estado.cursor.execute(query_voto, (voto, datahora_voto, protocolocripto))
             estado.connection.commit()
             #Registrando no Log de votações
             registrar_log(f"SUCESSO: Voto realizado com sucesso")

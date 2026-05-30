@@ -29,11 +29,11 @@ def conecta_mysql():
     try:
         # Establish the connection
         estado.connection = mysql.connector.connect(
-            host='127.0.0.1',          # or the IP address of your MySQL server
-            port=3306,                 # default port
-            user='root',      # your MySQL username
-            password='Curintia80@',  # your MySQL password
-            database='Projeto_Integrador_1'   # the specific database you want to use
+            host='127.0.0.1',         
+            port=3306,                 
+            user='root',      
+            password='Mogato@123',  
+            database='sistema_votacao'   
         )
         if estado.connection.is_connected():
             estado.cursor = estado.connection.cursor()

@@ -394,7 +394,6 @@ def cadastro_func():
         while len(estado.cpf) != 11 or estado.cpfvalido == False:
             estado.cpf = input("Digite o seu CPF: ")
             v.validacao_cpf_func(estado.cpf)
-            break
     except ValueError:
         print("CPF inválido.")
 
@@ -405,7 +404,6 @@ def cadastro_func():
         while len(estado.teleitor) != 12 or estado.teleitorvalido == False:
             estado.teleitor = input("Digite o seu Titulo Eleitoral: ")
             v.validacao_tituloeleitor_func(estado.teleitor)
-            break
     except ValueError:
         print("Titulo Eleitor inválido.")
     estado.mesario = input("Você quer ser mesario? (S/N): ").upper()
@@ -424,9 +422,9 @@ def cadastro_func():
 
     senhacripto = crypt.cifra_hill(estado.senha, np.matriz)
 
-
-    estado.cadastro = "INSERT INTO eleitores (nome_ele, cpf_ele, titulo_ele, senha_ele, mesario_ele) VALUES (%s, %s, %s, %s, %s)"
-    estado.valores = (estado.nome, cpfcripto, estado.teleitor, senhacripto, estado.mesario)
+    db.conecta_mysql()
+    estado.cadastro = "INSERT INTO eleitores (nome_ele, titulo_ele, cpf_ele, mesario_ele, senha_ele) VALUES (%s, %s, %s, %s, %s)"
+    estado.valores = (estado.nome, estado.teleitor, cpfcripto,estado.mesario, senhacripto)
     estado.cursor.execute(estado.cadastro, estado.valores)
     estado.connection.commit()
     estado.cursor.close()
