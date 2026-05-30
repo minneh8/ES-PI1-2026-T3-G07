@@ -178,6 +178,23 @@ def menu_buscacandidatos_func():
                 case 1:
                         termo = input("Digite o nome para buscar: ")
                         def busca_candidatos(termo):
+
+                            """
+                            Busca candidatos no sistema pelo nome.
+
+                            A função realiza uma busca no banco de dados por candidatos
+                            cujo nome contenha o termo informado. Os resultados são exibidos
+                            com número eleitoral, nome e número do partido.
+
+                            Args:
+                                termo (str): Termo de busca para filtrar candidatos pelo nome.
+                                            A busca é parcial (LIKE %termo%).
+
+                            Returns:
+                                None. Exibe os resultados encontrados no console ou mensagem
+                                informando que nenhum candidato foi encontrado.
+                            """
+
                             db.conecta_mysql()
                             cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
         
@@ -263,6 +280,27 @@ def menu_buscaeleitores_func():
                     print("Buscar Eleitores")
                     termo = input("Digite o nome para buscar: ")
                     def busca_eleitores(termo):
+
+                        """
+                        Busca eleitores no sistema pelo nome.
+
+                        A função realiza uma busca no banco de dados por eleitores
+                        cujo nome contenha o termo informado. Os resultados são exibidos
+                        com ID, nome, CPF (descriptografado) e título eleitoral.
+
+                        Args:
+                            termo (str): Termo de busca para filtrar eleitores pelo nome.
+                                        A busca é parcial (LIKE %termo%).
+
+                        Returns:
+                            None. Exibe os resultados encontrados no console ou mensagem
+                            informando que nenhum eleitor foi encontrado.
+
+                        Nota:
+                            O CPF é automaticamente descriptografado usando a Cifra de Hill
+                            antes de ser exibido, garantindo que não seja mostrado criptografado.
+                        """
+
                         db.conecta_mysql()
                         cursor = estado.connection.cursor(dictionary=True)  # Retorna dicionário em vez de tupla
     
