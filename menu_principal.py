@@ -1,12 +1,17 @@
-#import DATABASE
-#conexao = DATABASE.conecta_mysql()
-"""Menu Principal"""
+"""
+Módulo Menu Principal.
+
+Responsável por exibir o menu principal do sistema
+e direcionar o usuário para as funcionalidades
+disponíveis.
+"""
+
 import CondicoesGlobais as estado
 import Funções_Menu_Gerenciamento as gr
 import Funções_Menu_Votação as vt
 
 def menu_principal_func(): 
-    
+
     """
     Exibe e controla o menu principal do sistema eleitoral.
 

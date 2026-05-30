@@ -7,6 +7,7 @@ armazenada nas variáveis globais do sistema, permitindo que os demais
 módulos realizem consultas, inserções, atualizações e remoções de
 dados relacionados a eleitores, candidatos, votos, partidos e logs.
 """
+
 import CondicoesGlobais as estado
 def conecta_mysql():    
     """

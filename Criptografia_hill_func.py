@@ -7,6 +7,7 @@ a criptografia de CPFs, senhas, protocolos e demais informações
 utilizadas pelo sistema eleitoral.
 """
 
+#Salvando o alfabeto em uma váriavel
 alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 MOD = len(alfabeto)  # 36
  

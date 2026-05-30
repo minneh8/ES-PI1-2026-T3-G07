@@ -5,7 +5,7 @@ Responsável pela validação de CPFs e Títulos de Eleitor,
 geração de senhas e protocolos de votação, além da
 autenticação de usuários no sistema eleitoral.
 """
-# Validação do CPF do usuário
+
 import CondicoesGlobais as cg
 import DATABASE as db
 import Criptografia_hill_func as crypt
@@ -213,7 +213,7 @@ def login_func():
     criptografa as informações necessárias, consulta
     o banco de dados e verifica se o eleitor possui
     permissão para acessar o sistema.
-    
+
     Args:
         None
 

@@ -1,19 +1,61 @@
-#Funções menus Votação
+"""
+Módulo de Votação.
+
+Responsável pelo gerenciamento do processo eleitoral,
+incluindo abertura e encerramento da votação, registro
+de votos, auditoria, geração de logs, exibição de
+resultados e validação da integridade dos dados.
+
+O módulo também realiza consultas ao banco de dados e
+utiliza criptografia para garantir a segurança das
+informações armazenadas.
+"""
+
 import CondicoesGlobais as estado
 from datetime import datetime
 import DATABASE as db
 import Validações as v
 import Criptografia_hill_func as crypt
 
-#Resgistrando o LOG de votação
 def registrar_log(mensagem):
+
+    """
+    Registra eventos no arquivo de log do sistema.
+
+    A função grava uma mensagem acompanhada da data e
+    hora da ocorrência, permitindo auditoria das ações
+    realizadas durante o processo eleitoral.
+
+    Args:
+        mensagem (str): Mensagem que será registrada no log.
+
+    Returns:
+        None
+    """
+
     with open("logs.txt", "a", encoding="utf-8") as arquivo: #Abrir arquivo logs.txt na UTF-8
         datahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S") #Usando o import para salvar a data certa do computador convertendo em strings (STRF)
         arquivo.write(f"[{datahora}] {mensagem}\n") #Escrevendo no arquivo
 
 
-#Funcão para realizar votação, onde o usuário digita o número do candidato e o voto é registrado
+
 def realizar_votacao_func():
+        
+        """
+        Realiza o processo de votação de um eleitor.
+
+        A função valida o candidato informado, permite a
+        confirmação de voto nulo, atualiza o status do
+        eleitor, gera um protocolo de votação criptografado
+        e registra o voto no banco de dados.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+
         db.conecta_mysql()
         #Verificar se o sistema está aberto
         if estado.sistema_votacao_aberto == False:
@@ -115,8 +157,22 @@ def realizar_votacao_func():
             estado.cursor.close()
             estado.connection.close()
 
-"""Menu Votação"""
+
 def menu_votacao_func():
+
+    """
+    Exibe o menu principal de votação.
+
+    Permite iniciar o sistema eleitoral, acessar a área
+    de auditoria e consultar os resultados da eleição.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    
     while estado.menu_principal == 2:
         try:
             print("0 - Voltar \n1 - Começar a votação \n2 - Auditoria \n3 - Resultado")
@@ -170,8 +226,23 @@ def menu_votacao_func():
             print("Entrada Inválida. Digite um Numero")
 
 
-"""Auditoria"""
+
 def menu_auditoria_func():
+
+    """
+    Exibe o menu de auditoria do sistema.
+
+    Permite consultar os logs de execução e visualizar
+    os protocolos de votação armazenados no banco de
+    dados após sua descriptografia.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_votacao == 2:
         try:
             print("\n0 - Voltar\n1 - Exibir Logs \n2 - Exibir Protocolos de Votação")
@@ -238,9 +309,22 @@ def menu_auditoria_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Sistema De Votação"""
 def menu_sistem_votacao_func():
-    
+
+    """
+    Exibe o menu do sistema de votação.
+
+    Permite que eleitores realizem seus votos e que
+    mesários efetuem o encerramento oficial do processo
+    eleitoral.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_votacao == 1:
         try:
             print("\n0 - Voltar\n1 - Votar\n2 - Fechar Sistema de Votação")
@@ -286,18 +370,38 @@ def menu_sistem_votacao_func():
             estado.cursor.close()
             estado.connection.close()
 
-""""Menu Resultado"""
 def menu_resultado_func():
+
+    """
+    Exibe o menu de resultados da eleição.
+
+    Permite consultar o boletim de urna, estatísticas
+    de comparecimento, votos por partido e validações
+    de integridade dos dados registrados.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
 
     while estado.menu_votacao == 3:
         try:
             print("\n0 - Voltar\n1 - Boletim de Urna\n2 - Estatisticas\n3 - Votos por partido\n4 - Validação de Integridade")
             estado.menu_resultado= int(input("Escolha a opção desejada: "))
             match estado.menu_resultado:
+
                 case 0:
                     print("\nVoltando...")
                     return(menu_votacao_func())
+                
                 case 1:
+                    # Boletim de urna:
+                    # Consulta os votos de cada candidato,
+                    # contabiliza votos nulos e identifica
+                    # o candidato vencedor.
+
                     db.conecta_mysql()
                     estado.cursor = estado.connection.cursor(dictionary=True)
                     query_boletim = """
@@ -330,8 +434,10 @@ def menu_resultado_func():
                     FROM votos
                     WHERE num_cand = "NULO"
                     """
-                    estado.cursor.execute(query_boletim)
-                    votos_nulos = estado.cursor.fetchone(["votos_nulos"])
+
+                    estado.cursor.execute(query_nulos)
+                    votos_nulos = estado.cursor.fetchone()
+
                     print("\n===== BOLETIM DE URNA =====\n")
                     maior = -1
                     vencedor = None
@@ -348,7 +454,7 @@ def menu_resultado_func():
                             maior = candidato['total_votos']
                             vencedor = candidato
 
-                    print(f"Quantidade de votos nulos: {votos_nulos["votos_nulos"]}")
+                    print(f"Quantidade de votos nulos: {votos_nulos['votos_nulos']}")
 
                     print("\n===== VENCEDOR =====\n")
 
@@ -362,8 +468,12 @@ def menu_resultado_func():
                     estado.cursor.close()
                     estado.connection.close()
                     
-                
                 case 2:
+                    # Estatísticas:
+                    # Exibe quantidade total de eleitores,
+                    # eleitores que votaram e percentual
+                    # de comparecimento.
+
                     db.conecta_mysql()
                     cursor = estado.connection.cursor()
                     query_total = """
@@ -395,6 +505,10 @@ def menu_resultado_func():
                     estado.connection.close()
                 
                 case 3: 
+                    # Votos por partido:
+                    # Agrupa os votos recebidos por partido
+                    # e ordena do mais votado para o menos votado.
+                    
                    db.conecta_mysql() 
                    
                    cursor = estado.connection.cursor(dictionary=True) 
@@ -430,6 +544,11 @@ def menu_resultado_func():
                    estado.connection.close()  
 
                 case 4:
+                    # Validação de integridade:
+                    # Compara a quantidade de votos registrados
+                    # com a quantidade de eleitores marcados
+                    # como votantes.
+
                     db.conecta_mysql() 
 
                     cursor = estado.connection.cursor() 

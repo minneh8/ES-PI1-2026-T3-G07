@@ -1,4 +1,16 @@
-# Funções menu gerenciamento
+"""
+Módulo de Gerenciamento.
+
+Responsável pelas funcionalidades administrativas do sistema
+eleitoral, incluindo gerenciamento de candidatos e eleitores,
+consultas ao banco de dados, buscas, listagens e cadastramento
+de novos eleitores.
+
+O módulo também realiza a integração com o banco de dados MySQL,
+validações de documentos e rotinas de criptografia utilizadas
+durante o processo de cadastro.
+"""
+
 import CondicoesGlobais as estado
 import DATABASE as db
 import Validações as v
@@ -6,6 +18,20 @@ import Criptografia_hill_func as crypt
 import numpy as np
 
 def menu_gerenciamento_func():
+
+    """
+    Exibe o menu de gerenciamento do sistema.
+
+    Permite ao usuário acessar as funcionalidades relacionadas
+    ao gerenciamento de candidatos e eleitores.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_principal == 1:
         try:
             print("\n0 - Voltar \n1 - Candidatos \n2 - Eleitores")
@@ -28,8 +54,21 @@ def menu_gerenciamento_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Lista de candidatos"""
 def menu_listacandidatos_func(): 
+
+    """
+    Exibe o menu de listagem de candidatos.
+
+    Permite visualizar todos os candidatos cadastrados
+    no sistema.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_candidatos == 1:
         try:
             print("\n0 - Voltar\n1 - Lista de Candidatos")
@@ -63,8 +102,21 @@ def menu_listacandidatos_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Lista de eleitores"""
 def menu_listaeleitores_func():
+
+    """
+    Exibe o menu de listagem de eleitores.
+
+    Permite visualizar todos os eleitores cadastrados
+    no sistema.
+    
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_eleitores == 1:
         try:
             print("\n0 - Voltar\n1 - Mostrar a lista de Eleitores")
@@ -98,8 +150,20 @@ def menu_listaeleitores_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Busca de candidatos"""
 def menu_buscacandidatos_func():
+
+    """
+    Exibe o menu de busca de candidatos.
+
+    Permite pesquisar candidatos cadastrados por nome.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_candidatos == 3 : 
         try:
             print("\n0 - Voltar\n1 - Busca de Candidatos")
@@ -135,15 +199,21 @@ def menu_buscacandidatos_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-
-"""Remoção de candidatos"""
-
-"""Menu cadastro de candidatos"""
-
-"""Menu Edição de dados - Candidatos"""
-
-"""Menu Candidatos"""
 def menu_candidatos_func():
+    
+    """
+    Exibe o menu de candidatos.
+
+    Permite acessar funcionalidades de consulta,
+    busca e gerenciamento de candidatos.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_gerenciamento == 1:
         try:
             print("\n0 - Voltar\n1 - Lista de Candidatos \n2 - Busca de Candidatos \n")
@@ -165,8 +235,20 @@ def menu_candidatos_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Busca Eleitores"""
 def menu_buscaeleitores_func():
+
+    """
+    Exibe o menu de busca de eleitores.
+
+    Permite pesquisar eleitores cadastrados por nome.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_eleitores == 2:
         try:
             print("\n0 - Voltar\n1 - Buscar Eleitores")
@@ -203,8 +285,21 @@ def menu_buscaeleitores_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")
 
-"""Cadastro Eleitores"""
 def menu_cadastramento_ele_func():
+
+    """
+    Exibe o menu de cadastramento de eleitores.
+
+    Permite iniciar o processo de cadastro de um
+    novo eleitor no sistema.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     while estado.menu_eleitores == 3:
         try:
             print("\n0 - Voltar\n1 - Cadastramento de Eleitores")
@@ -225,9 +320,21 @@ def menu_cadastramento_ele_func():
         except ValueError:
             print("Entrada inválida. Digite um número.")    
 
-"""Menu Eleitores"""
 def menu_eleitores_func():
-   
+
+    """
+    Exibe o menu de eleitores.
+
+    Permite acessar funcionalidades relacionadas à
+    consulta, busca e cadastramento de eleitores.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """   
+
     while estado.menu_gerenciamento == 2:
         try:
             print("\n0 - Voltar\n1 - Lista de Eleitores \n2 - Busca de Eleitores \n3 - Cadastramento")
@@ -254,6 +361,22 @@ def menu_eleitores_func():
             print("Entrada inválida. Digite um número.")
 
 def cadastro_func():
+
+    """
+    Realiza o cadastro de um novo eleitor.
+
+    A função solicita os dados do eleitor, valida CPF
+    e título eleitoral, gera uma senha automática,
+    criptografa informações sensíveis utilizando a
+    Cifra de Hill e registra o eleitor no banco de dados.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     db.conecta_mysql()
     print("Para realizar o cadastro, por favor, digite o seu Nome, Sobrenome, CPF, Titulo Eleitoral.\nSua Senha será gerada automaticamente.\n")
     estado.nome = str(input("Digite o seu Nome Completo: "))
@@ -309,4 +432,3 @@ def cadastro_func():
     estado.cursor.close()
     estado.connection.close()
     print("Cadastro realizado com sucesso!")
-    
