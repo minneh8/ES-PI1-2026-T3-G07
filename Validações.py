@@ -8,7 +8,8 @@ autenticação de usuários no sistema eleitoral.
 
 import CondicoesGlobais as cg
 import DATABASE as db
-import Criptografia_hill_func as crypt
+import Criptografia_hill_func as crypt    
+import Funções_Menu_Votação as v
 def validacao_cpf_func(cpf):   
     """
     Valida um número de CPF informado pelo usuário.
@@ -149,6 +150,8 @@ def validacao_tituloeleitor_func (teleitor):
      # Verificando se o estado existe na lista
     if (estado_cod not in estados): # SE o código dos estados NÃO ESTÁ no dict
         print("Estado inválido")
+        cg.teleitorvalido = False
+        return
 
     cg.estado = estados[estado_cod] # Definindo o estado para o conjunto de números recebidos
     
@@ -170,6 +173,7 @@ def validacao_tituloeleitor_func (teleitor):
         cg.connection.close()
     else: 
         print("Titulo de Eleitor inválido!")
+        print("Erro Aqui")
         cg.teleitorvalido = False
 
 
@@ -247,19 +251,17 @@ def login_func():
     Returns:
         None
     """
-    #Conectando ao banco de dados
-    import Funções_Menu_Votação as v
-    db.conecta_mysql()
-
-        #solicitar o login do eleitor - feito no cadastramento
+    #solicitar o login do eleitor - feito no cadastramento
     cg.cpf_eleitor = input("\nDigite os 4 primeiros dígitos do seu CPF: ")
     if len(cg.cpf_eleitor) != 4:
             print("CPF inválido.")
             return
+    
     teleitor = input("Digite os 4 primeiros dígitos do seu Título Eleitoral: ")
     if len(teleitor) != 4:
             print("Título Eleitor inválido.")
             return
+    
     senha_eleitor = input("Digite a sua senha: ")
     matrizcripto = [
         [1, 1],
@@ -268,6 +270,8 @@ def login_func():
     cpfcripto = crypt.cifra_hill(cg.cpf_eleitor, matrizcripto)
     senhacrypto = crypt.cifra_hill(senha_eleitor, matrizcripto)
     try: 
+        #Conectando ao banco de dados
+        db.conecta_mysql()
         #verificar se o título eleitoral e a senha estão corretos
         #Query para verificar o login do eleitor e ser jogada no MySQL
         query_login = """
@@ -283,8 +287,9 @@ def login_func():
 
         if cg.eleitor == None:
             print("CPF, Titulo Eleitoral ou Senha inválidos!")
-            v.registrar_log("ALERTA: Tentativa de acesso negado")
-            return # Para a função de executar
+            cg.eleitor = None
+            return
+        
         if cg.eleitor[4] == 1:
             print("Eleitor Mesario!")
             print("\nLogin realizado com sucesso!")
@@ -292,9 +297,5 @@ def login_func():
             print("Eleitor Comum!")
             print("\nLogin realizado com sucesso!")
 
-    except db.conecta_mysql.Error as err:
+    except Exception as err:
         print(f"Erro ao executar a consulta no MySQL: {err}")
-        return
-    finally:
-        cg.cursor.close()
-        cg.connection.close()

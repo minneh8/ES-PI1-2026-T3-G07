@@ -16,6 +16,7 @@ from datetime import datetime
 import DATABASE as db
 import Validações as v
 import Criptografia_hill_func as crypt
+import Descriptografia_hill_func as decrypt
 
 def registrar_log(mensagem):
 
@@ -204,15 +205,14 @@ def menu_votacao_func():
                             estado.connection.commit()
                             registrar_log("ABERTURA: Votação iniciada com sucesso. Total de votos zerado.")
                             menu_sistem_votacao_func()
-                            break
                         else:
                             print("Sistema de votação ja aberto!")
-                            return
+                            continue
                     else:
-                        print("Eleitor Comum")
+                        print("Login Incorreto")
                         print("Apenas eleitores mesarios podem iniciar o sistema de votação.")
                         registrar_log("ALERTA: Tentativa de acesso negado")
-                        return
+                        continue
                 case 2:
                     print("Auditoria")
                     menu_auditoria_func()
@@ -296,10 +296,7 @@ def menu_auditoria_func():
 
                             protocolo_criptografado = protocolo["protocolo"]
 
-                            protocolo_correto = crypt.decifra_hill(
-                                protocolo_criptografado,
-                                A_inv
-                            )
+                            protocolo_correto = decrypt.decifra_hill(protocolo_criptografado,A_inv)
 
                             print(protocolo_correto)
 
@@ -337,31 +334,42 @@ def menu_sistem_votacao_func():
                     return(menu_votacao_func())
                 case 1:
                     v.login_func()
-                    if estado.eleitor[3] == False and estado.eleitor != None:
+                    if estado.eleitor != None and estado.eleitor[3] == False:
                         realizar_votacao_func() 
                         break
+
+                    elif estado.eleitor is None:
+                        # Login falhou
+                        print("Login Incorreto!")
+                        registrar_log("ALERTA: Tentativa de acesso negado")
+                        continue  
                     else:
                         print("Esse Eleitor ja votou!")
                         registrar_log("ALERTA: Tentativa de voto duplo")
-                        menu_sistem_votacao_func()
+                        continue  
                 case 2:
                         if estado.sistema_votacao_aberto == False:
                             print("Sistema de votação ja fechado!")
                             menu_votacao_func()
                         else:
-                            #Variável global de controle, para não ter erros
                             v.login_func() 
-                            if estado.eleitor[4] == False:
+                            if estado.eleitor is None:  
+                                print("Login Incorreto")
+                                print("Apenas eleitores mesarios podem fechar o sistema de votação.")
+                                registrar_log("ALERTA: Tentativa de acesso negado")
+                                continue  # Volta ao loop
+
+                            elif estado.eleitor[4] == False:  
                                 print("Eleitor Comum")
                                 print("Apenas eleitores mesarios podem fechar o sistema de votação.")
                                 registrar_log("ALERTA: Tentativa de acesso negado")
-                                return
+                                continue
+
                             else:
                                 estado.sistema_votacao_aberto = False
                                 registrar_log("ENCERRAMENTO: Votação finalizada com sucesso")
                                 print("Encerrando Sistema de Votação...")
-
-                                menu_votacao_func()
+                                continue 
                 case _:
                     print("Opção inválida, tente novamente.")
         except ValueError:
