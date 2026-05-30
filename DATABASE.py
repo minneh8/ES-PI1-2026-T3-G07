@@ -32,7 +32,7 @@ def conecta_mysql():
             host='127.0.0.1',         
             port=3306,                 
             user='root',      
-            password='Mogato@123',  
+            password='Curintia80@',  
             database='sistema_votacao'   
         )
         if estado.connection.is_connected():

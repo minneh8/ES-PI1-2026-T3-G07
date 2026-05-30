@@ -277,7 +277,7 @@ def menu_buscaeleitores_func():
                         matriz_inversa = [[1, -1], [0, 1]]
                         for eleitor in resultados:
                             cpf_descriptografado = decrypt.decifra_hill(eleitor['cpf_ele'], matriz_inversa)
-                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {cpf_descriptografado} | Título Eleitoral: {eleitor['titulo_ele']}")
+                            print(f"ID: {eleitor['id_ele']} | Nome: {eleitor['nome_ele']} | CPF: {(cpf_descriptografado[:11])} | Título Eleitoral: {eleitor['titulo_ele']}")
                         cursor.close()
 
                     busca_eleitores(termo)
