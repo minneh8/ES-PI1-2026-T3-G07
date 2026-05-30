@@ -1,8 +1,10 @@
-"""Condiçoes Globais"""
+"""
+Módulo de Condições Globais.
 
-#import Menu_Gerenciamento as gr
-#import Menu_Votacao as vt
-
+Armazena variáveis globais utilizadas pelo sistema eleitoral,
+permitindo o compartilhamento de estados, menus, conexões com
+o banco de dados e informações temporárias entre os módulos.
+"""
 menu_principal = -1  
 menu_gerenciamento = -1  
 menu_votacao = -1  

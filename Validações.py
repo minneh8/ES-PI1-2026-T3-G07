@@ -1,12 +1,29 @@
+"""
+Módulo de Validações.
+
+Responsável pela validação de CPFs e Títulos de Eleitor,
+geração de senhas e protocolos de votação, além da
+autenticação de usuários no sistema eleitoral.
+"""
 # Validação do CPF do usuário
 import CondicoesGlobais as cg
 import DATABASE as db
 import Criptografia_hill_func as crypt
 def validacao_cpf_func(cpf):   
+    """
+    Valida um número de CPF informado pelo usuário.
+
+    A função verifica os dígitos verificadores do CPF de
+    acordo com as regras oficiais de validação e atualiza
+    a variável global responsável pelo status da validação.
+
+    Args:
+        cpf (str): CPF informado pelo usuário.
+
+    Returns:
+        None
+    """
     
-    """ Validação do CPF, onde o usuário digita o número e o programa verifica se é um CPF """
-    """ N = Números do CPF """
-    # D = Digito Verificador do CPF 
     n1 = int(cg.cpf[0])
     n2 = int(cg.cpf[1])
     n3 = int(cg.cpf[2])
@@ -16,8 +33,8 @@ def validacao_cpf_func(cpf):
     n7 = int(cg.cpf[6])
     n8 = int(cg.cpf[7])
     n9 = int(cg.cpf[8])
-    d1 = int(cg.cpf[9])
-    d2 = int(cg.cpf[10])
+    d1 = int(cg.cpf[9])  # D1 = Primeior digito Verificador do CPF 
+    d2 = int(cg.cpf[10]) # D = Segundo digito Verificador do CPF 
 
     # Verificação de dígito
     # Dígito 1
@@ -62,10 +79,23 @@ def validacao_cpf_func(cpf):
 # Validação do Título de Eleitor do Usuário
 def validacao_tituloeleitor_func (teleitor):
 
+    """
+    Valida um Título de Eleitor informado pelo usuário.
+
+    A função verifica o tamanho do título, identifica o
+    estado de emissão através do código eleitoral e valida
+    os dígitos verificadores do documento.
+
+    Args:
+        teleitor (str): Título de Eleitor informado pelo usuário.
+
+    Returns:
+        None
+    """
+
     while len(cg.teleitor) != 12:
         print("Titulo Eleitor inválido. O Titulo Eleitor deve conter exatamente 12 dígitos numéricos.")
         cg.teleitor = input("Digite o seu Titulo Eleitor: ")
-
     # N = Número do título
     # E = Dígito de estado
     # D = Dígito Verificador
@@ -117,6 +147,20 @@ def validacao_tituloeleitor_func (teleitor):
     # Aqui será feito o código de verificação
 
 def gerador_senha_func():
+
+    """
+    Gera automaticamente uma senha para o eleitor.
+
+    A senha é formada pelas iniciais do nome do usuário
+    combinadas com quatro dígitos numéricos aleatórios.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     import random
 
     partes = cg.nome.split()  # Separa pelo espaço
@@ -134,6 +178,21 @@ def gerador_senha_func():
     cg.senha = letra1 + letra2 + letra3 + numeros
 
 def gerar_protocolo(voto):
+
+    """
+    Gera um protocolo único para comprovação da votação.
+
+    O protocolo é composto por um identificador, letras
+    aleatórias, ano da eleição, número do candidato
+    escolhido e dígitos aleatórios.
+
+    Args:
+        voto (str): Número do candidato selecionado.
+
+    Returns:
+        None
+    """
+
     import random
     import string
     # "V" + 2 letras aleatórias + Ano (26) + número candidato (2 dígitos) + 5 dígitos aleatórios
@@ -147,6 +206,20 @@ def gerar_protocolo(voto):
     print(f"Seu Protocolo de Votação: {cg.protocolo}")
 
 def login_func():
+    """
+    Realiza a autenticação de um eleitor no sistema.
+
+    A função solicita os dados de acesso do usuário,
+    criptografa as informações necessárias, consulta
+    o banco de dados e verifica se o eleitor possui
+    permissão para acessar o sistema.
+    
+    Args:
+        None
+
+    Returns:
+        None
+    """
     #Conectando ao banco de dados
     import Funções_Menu_Votação as v
     db.conecta_mysql()
@@ -198,10 +271,3 @@ def login_func():
     finally:
         cg.cursor.close()
         cg.connection.close()
-
-
-
-    
-
-
-

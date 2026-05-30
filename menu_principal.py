@@ -6,6 +6,21 @@ import Funções_Menu_Gerenciamento as gr
 import Funções_Menu_Votação as vt
 
 def menu_principal_func(): 
+    
+    """
+    Exibe e controla o menu principal do sistema eleitoral.
+
+    Permite ao usuário acessar os módulos de Gerenciamento,
+    Votação ou encerrar a execução do sistema.
+
+    Args:
+        None
+
+    Returns:
+        None: A função apenas direciona o fluxo do programa
+        para o menu selecionado pelo usuário.
+    """
+
     while estado.menu_principal != 0:
         try:
             print("\n0 - Encerrar \n1 - Gerenciamento \n2 - Votação")
